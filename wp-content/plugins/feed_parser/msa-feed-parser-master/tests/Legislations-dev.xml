@@ -1,0 +1,410 @@
+<bills>
+<bill id="59bc8649115f" sscode="CT17">
+<number>
+<session>2017</session>
+  <code>CT</code>
+  <type>SB</type>
+  <number>1501</number>
+</number>
+<sponsor>
+<name><![CDATA[Sen. Martin Looney (DEM-CT)]]></name>
+<URL><![CDATA[http://senatedems.ct.gov/Looney.php]]></URL>
+</sponsor>
+<title>
+<![CDATA[AN ACT CONCERNING ZERO CARBON SOLICITATION AND PROCUREMENT.]]>
+</title>
+<abstract></abstract>
+<status>
+<statusdt>11/03/2017</statusdt><statusval><![CDATA[Public Act 17-3]]></statusval>
+<standardkey>95000</standardkey><standardval>Signed by governor</standardval>
+</status>
+<billurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=59bc8649115f&rtype=text]]>
+</billurl>
+<statusurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=59bc8649115f&rtype=status]]>
+</statusurl>
+<profiles>
+<profile id="52d45db620d" status="tracking">
+  <pname><![CDATA[ Poet|Profile|greenhouse gas]]></pname>
+<keywords>
+  <keyword><![CDATA[fuel]]></keyword>
+  <keyword><![CDATA[greenhouse gas]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+<relatedbills></relatedbills>
+<hearings></hearings>
+</bill>
+<bill id="59f293c97ba" sscode="CT17">
+<number>
+<session>2017</session>
+  <code>CT</code>
+  <type>SB</type>
+  <number>1502</number>
+</number>
+<sponsor>
+<name><![CDATA[Sen. Martin Looney (DEM-CT)]]></name>
+<URL><![CDATA[http://senatedems.ct.gov/Looney.php]]></URL>
+</sponsor>
+<title>
+<![CDATA[AN ACT CONCERNING THE STATE BUDGET FOR THE BIENNIUM ENDING JUNE 30, 2019, MAKING APPROPRIATIONS THEREFOR, AUTHORIZING AND ADJUSTING BONDS OF THE STATE AND IMPLEMENTING PROVISIONS OF THE BUDGET.]]>
+</title>
+<abstract></abstract>
+<status>
+<statusdt>11/03/2017</statusdt><statusval><![CDATA[Public Act 17-2]]></statusval>
+<standardkey>96000</standardkey><standardval>Final adoption. Signed by governor or veto overridden or no signature needed </standardval>
+</status>
+<billurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=59f293c97ba&rtype=text]]>
+</billurl>
+<statusurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=59f293c97ba&rtype=status]]>
+</statusurl>
+<profiles>
+<profile id="58c03a4f18" status="tracking">
+  <pname><![CDATA[ Astellas|Company Issues|Co Pay Cards]]></pname>
+<keywords>
+  <keyword><![CDATA[cost sharing]]></keyword>
+  <keyword><![CDATA[cost-sharing]]></keyword>
+  <keyword><![CDATA[drug]]></keyword>
+  <keyword><![CDATA[drugs]]></keyword>
+  <keyword><![CDATA[pharmaceutical]]></keyword>
+  <keyword><![CDATA[pharmaceuticals]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="5108369623" status="tracking">
+  <pname><![CDATA[ Astellas|Company Issues|Pharmacy Benefit Management]]></pname>
+<keywords>
+  <keyword><![CDATA[benefit]]></keyword>
+  <keyword><![CDATA[benefits]]></keyword>
+  <keyword><![CDATA[manage]]></keyword>
+  <keyword><![CDATA[managed]]></keyword>
+  <keyword><![CDATA[management]]></keyword>
+  <keyword><![CDATA[manager]]></keyword>
+  <keyword><![CDATA[pharmaceutical]]></keyword>
+  <keyword><![CDATA[pharmaceuticals]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="58c03d1351dc" status="tracking">
+  <pname><![CDATA[ Astellas|Company Issues|Stem Cell]]></pname>
+<keywords>
+  <keyword><![CDATA[stem cell]]></keyword>
+  </keywords>
+</profile>
+<profile id="54c9175350f" status="tracking">
+  <pname><![CDATA[ Astellas|Company Issues|Transparency in Exchanges]]></pname>
+<keywords>
+  <keyword><![CDATA[exchange]]></keyword>
+  <keyword><![CDATA[exchanged]]></keyword>
+  <keyword><![CDATA[medicaid]]></keyword>
+  <keyword><![CDATA[transparency]]></keyword>
+  </keywords>
+</profile>
+<profile id="4f3164841f" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Change in Reimbursement for Medicaid]]></pname>
+<keywords>
+  <keyword><![CDATA[medicaid]]></keyword>
+  <keyword><![CDATA[medical assistance]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  <keyword><![CDATA[reimburse]]></keyword>
+  <keyword><![CDATA[reimbursed]]></keyword>
+  <keyword><![CDATA[reimburses]]></keyword>
+  <keyword><![CDATA[reimbursing]]></keyword>
+  </keywords>
+</profile>
+<profile id="4f3164a31f" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Cost-Containment in Medicaid]]></pname>
+<keywords>
+  <keyword><![CDATA[containment]]></keyword>
+  <keyword><![CDATA[medicaid]]></keyword>
+  <keyword><![CDATA[medical assistance]]></keyword>
+  <keyword><![CDATA[reduction]]></keyword>
+  <keyword><![CDATA[reductions]]></keyword>
+  </keywords>
+</profile>
+<profile id="4f31653320" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Essential Health Benefit]]></pname>
+<keywords>
+  <keyword><![CDATA[essential health benefits]]></keyword>
+  </keywords>
+</profile>
+<profile id="4f31651511a" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Healthcare Exchanges]]></pname>
+<keywords>
+  <keyword><![CDATA[exchange]]></keyword>
+  <keyword><![CDATA[exchanged]]></keyword>
+  <keyword><![CDATA[health care]]></keyword>
+  <keyword><![CDATA[healthcare]]></keyword>
+  <keyword><![CDATA[information exchange]]></keyword>
+  <keyword><![CDATA[information exchanged]]></keyword>
+  <keyword><![CDATA[insurance exchange]]></keyword>
+  </keywords>
+</profile>
+<profile id="4f3164d15d8" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Payment Reform]]></pname>
+<keywords>
+  <keyword><![CDATA[case]]></keyword>
+  <keyword><![CDATA[cases]]></keyword>
+  <keyword><![CDATA[evidence-based]]></keyword>
+  <keyword><![CDATA[pharmaceutical]]></keyword>
+  <keyword><![CDATA[pharmaceuticals]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  <keyword><![CDATA[price]]></keyword>
+  <keyword><![CDATA[prices]]></keyword>
+  <keyword><![CDATA[rate]]></keyword>
+  <keyword><![CDATA[rates]]></keyword>
+  <keyword><![CDATA[rating]]></keyword>
+  <keyword><![CDATA[ratings]]></keyword>
+  </keywords>
+</profile>
+<profile id="533b110315c2" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Specialty Tiers]]></pname>
+<keywords>
+  <keyword><![CDATA[coinsurance]]></keyword>
+  <keyword><![CDATA[cost sharing]]></keyword>
+  <keyword><![CDATA[cost-sharing]]></keyword>
+  <keyword><![CDATA[drug]]></keyword>
+  <keyword><![CDATA[drugs]]></keyword>
+  <keyword><![CDATA[health]]></keyword>
+  <keyword><![CDATA[health's]]></keyword>
+  <keyword><![CDATA[healthy]]></keyword>
+  <keyword><![CDATA[medical]]></keyword>
+  <keyword><![CDATA[medicine]]></keyword>
+  <keyword><![CDATA[out-of-pocket]]></keyword>
+  <keyword><![CDATA[pharmaceutical]]></keyword>
+  <keyword><![CDATA[pharmaceuticals]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="54ede1801ca" status="tracking">
+  <pname><![CDATA[ Astellas|Healthcare General|Treatment Pathways]]></pname>
+<keywords>
+  <keyword><![CDATA[formulary]]></keyword>
+  <keyword><![CDATA[health carrier]]></keyword>
+  <keyword><![CDATA[health carrier's]]></keyword>
+  <keyword><![CDATA[health carriers]]></keyword>
+  <keyword><![CDATA[health plan]]></keyword>
+  <keyword><![CDATA[insurance companies]]></keyword>
+  <keyword><![CDATA[insurance company]]></keyword>
+  <keyword><![CDATA[pay-for-performance]]></keyword>
+  <keyword><![CDATA[prescribe]]></keyword>
+  <keyword><![CDATA[prescribed]]></keyword>
+  <keyword><![CDATA[prescribes]]></keyword>
+  <keyword><![CDATA[prescribing]]></keyword>
+  <keyword><![CDATA[prescription]]></keyword>
+  </keywords>
+</profile>
+<profile id="56e71f931f8" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Renewable Energy]]></pname>
+<keywords>
+  <keyword><![CDATA[credit]]></keyword>
+  <keyword><![CDATA[credited]]></keyword>
+  <keyword><![CDATA[crediting]]></keyword>
+  <keyword><![CDATA[credits]]></keyword>
+  <keyword><![CDATA[renewable energy]]></keyword>
+  </keywords>
+</profile>
+<profile id="544527521fe" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Tax Credit]]></pname>
+<keywords>
+  <keyword><![CDATA[infrastructure]]></keyword>
+  <keyword><![CDATA[tax credit]]></keyword>
+  <keyword><![CDATA[tax credits]]></keyword>
+  </keywords>
+</profile>
+<profile id="5728c32c1e2" status="tracking">
+  <pname><![CDATA[ Intuit|Cybersecurity|Cyber]]></pname>
+<keywords>
+  <keyword><![CDATA[data]]></keyword>
+  <keyword><![CDATA[privacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="5728d40d1de" status="tracking">
+  <pname><![CDATA[ Intuit|Data Privacy|Data Privacy]]></pname>
+<keywords>
+  <keyword><![CDATA[consumer]]></keyword>
+  <keyword><![CDATA[consumers]]></keyword>
+  <keyword><![CDATA[financial]]></keyword>
+  <keyword><![CDATA[privacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="531898e07606" status="tracking">
+  <pname><![CDATA[ Intuit|General|Extended Producer Responsibility]]></pname>
+<keywords>
+  <keyword><![CDATA[e-waste]]></keyword>
+  </keywords>
+</profile>
+<profile id="52e5c0c911" status="tracking">
+  <pname><![CDATA[ Intuit|Tax|E-Filing]]></pname>
+<keywords>
+  <keyword><![CDATA[electronically]]></keyword>
+  <keyword><![CDATA[file]]></keyword>
+  <keyword><![CDATA[filed]]></keyword>
+  <keyword><![CDATA[files]]></keyword>
+  <keyword><![CDATA[filing]]></keyword>
+  <keyword><![CDATA[filings]]></keyword>
+  <keyword><![CDATA[tax]]></keyword>
+  <keyword><![CDATA[taxed]]></keyword>
+  <keyword><![CDATA[taxes]]></keyword>
+  <keyword><![CDATA[taxing]]></keyword>
+  </keywords>
+</profile>
+<profile id="570bcc501338" status="tracking">
+  <pname><![CDATA[ Mylan|General Business Issues|Changes in State Licensing]]></pname>
+<keywords>
+  <keyword><![CDATA[controlled substances]]></keyword>
+  <keyword><![CDATA[drug]]></keyword>
+  <keyword><![CDATA[drugs]]></keyword>
+  <keyword><![CDATA[license]]></keyword>
+  <keyword><![CDATA[licensed]]></keyword>
+  <keyword><![CDATA[licensee]]></keyword>
+  <keyword><![CDATA[licensee's]]></keyword>
+  <keyword><![CDATA[licenses]]></keyword>
+  <keyword><![CDATA[licensing]]></keyword>
+  <keyword><![CDATA[licensure]]></keyword>
+  <keyword><![CDATA[medical devices]]></keyword>
+  <keyword><![CDATA[pharmaceutical]]></keyword>
+  <keyword><![CDATA[pharmaceuticals]]></keyword>
+  <keyword><![CDATA[pharmacies]]></keyword>
+  <keyword><![CDATA[pharmacist]]></keyword>
+  <keyword><![CDATA[pharmacists]]></keyword>
+  <keyword><![CDATA[pharmacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="548b173b216" status="tracking">
+  <pname><![CDATA[ Navient|Business|Customer Privacy]]></pname>
+<keywords>
+  <keyword><![CDATA[data]]></keyword>
+  <keyword><![CDATA[privacy]]></keyword>
+  </keywords>
+</profile>
+<profile id="548b16fa228" status="tracking">
+  <pname><![CDATA[ Navient|Business|Debt Collection]]></pname>
+<keywords>
+  <keyword><![CDATA[collect]]></keyword>
+  <keyword><![CDATA[collected]]></keyword>
+  <keyword><![CDATA[collecting]]></keyword>
+  <keyword><![CDATA[collection]]></keyword>
+  <keyword><![CDATA[collections]]></keyword>
+  <keyword><![CDATA[collective]]></keyword>
+  <keyword><![CDATA[collector]]></keyword>
+  <keyword><![CDATA[collects]]></keyword>
+  <keyword><![CDATA[debt]]></keyword>
+  <keyword><![CDATA[debts]]></keyword>
+  </keywords>
+</profile>
+<profile id="548b14d5212" status="tracking">
+  <pname><![CDATA[ Navient|Business|Fees and Charges]]></pname>
+<keywords>
+  <keyword><![CDATA[cap]]></keyword>
+  <keyword><![CDATA[capped]]></keyword>
+  <keyword><![CDATA[charge]]></keyword>
+  <keyword><![CDATA[chargeable]]></keyword>
+  <keyword><![CDATA[charged]]></keyword>
+  <keyword><![CDATA[charges]]></keyword>
+  <keyword><![CDATA[debt]]></keyword>
+  <keyword><![CDATA[debts]]></keyword>
+  <keyword><![CDATA[fee]]></keyword>
+  <keyword><![CDATA[feeding]]></keyword>
+  <keyword><![CDATA[fees]]></keyword>
+  <keyword><![CDATA[feet]]></keyword>
+  <keyword><![CDATA[interest rate]]></keyword>
+  <keyword><![CDATA[loan]]></keyword>
+  <keyword><![CDATA[loans]]></keyword>
+  <keyword><![CDATA[maximum]]></keyword>
+  <keyword><![CDATA[minimum]]></keyword>
+  <keyword><![CDATA[mortgage]]></keyword>
+  <keyword><![CDATA[mortgaged]]></keyword>
+  </keywords>
+</profile>
+<profile id="548b16eb1b" status="tracking">
+  <pname><![CDATA[ Navient|Business|Student Loans]]></pname>
+<keywords>
+  <keyword><![CDATA[ ]]></keyword>
+  </keywords>
+</profile>
+<profile id="5877b9d8219" status="tracking">
+  <pname><![CDATA[ Upwork|General|Contractor Obligations]]></pname>
+<keywords>
+  <keyword><![CDATA[contractor]]></keyword>
+  <keyword><![CDATA[contractor's]]></keyword>
+  <keyword><![CDATA[contractors]]></keyword>
+  <keyword><![CDATA[deduct]]></keyword>
+  <keyword><![CDATA[deducted]]></keyword>
+  <keyword><![CDATA[withhold]]></keyword>
+  <keyword><![CDATA[withholding]]></keyword>
+  </keywords>
+</profile>
+<profile id="585abb261f5" status="tracking">
+  <pname><![CDATA[ Upwork|General|Independent contractor classification]]></pname>
+<keywords>
+  <keyword><![CDATA[classification]]></keyword>
+  <keyword><![CDATA[classifications]]></keyword>
+  <keyword><![CDATA[classified]]></keyword>
+  <keyword><![CDATA[classify]]></keyword>
+  <keyword><![CDATA[employ]]></keyword>
+  <keyword><![CDATA[employed]]></keyword>
+  <keyword><![CDATA[employee]]></keyword>
+  <keyword><![CDATA[employee's]]></keyword>
+  <keyword><![CDATA[employees]]></keyword>
+  <keyword><![CDATA[employees']]></keyword>
+  <keyword><![CDATA[employer]]></keyword>
+  <keyword><![CDATA[employer's]]></keyword>
+  <keyword><![CDATA[employers]]></keyword>
+  <keyword><![CDATA[employing]]></keyword>
+  <keyword><![CDATA[employment]]></keyword>
+  <keyword><![CDATA[employs]]></keyword>
+  <keyword><![CDATA[self-employed]]></keyword>
+  <keyword><![CDATA[work]]></keyword>
+  <keyword><![CDATA[worked]]></keyword>
+  <keyword><![CDATA[worker]]></keyword>
+  <keyword><![CDATA[workers]]></keyword>
+  <keyword><![CDATA[workers']]></keyword>
+  <keyword><![CDATA[workforce]]></keyword>
+  <keyword><![CDATA[working]]></keyword>
+  <keyword><![CDATA[works]]></keyword>
+  <keyword><![CDATA[workshop]]></keyword>
+  <keyword><![CDATA[workshops]]></keyword>
+  </keywords>
+</profile>
+<profile id="5739e9cd1b9e" status="tracking">
+  <pname><![CDATA[ Xtend|General|Medicaid Billing]]></pname>
+<keywords>
+  <keyword><![CDATA[bill]]></keyword>
+  <keyword><![CDATA[billed]]></keyword>
+  <keyword><![CDATA[billing]]></keyword>
+  <keyword><![CDATA[claim]]></keyword>
+  <keyword><![CDATA[claimed]]></keyword>
+  <keyword><![CDATA[claiming]]></keyword>
+  <keyword><![CDATA[claims]]></keyword>
+  <keyword><![CDATA[covered services]]></keyword>
+  <keyword><![CDATA[medicaid]]></keyword>
+  <keyword><![CDATA[reimburse]]></keyword>
+  <keyword><![CDATA[reimbursed]]></keyword>
+  <keyword><![CDATA[reimburses]]></keyword>
+  <keyword><![CDATA[reimbursing]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+<relatedbills></relatedbills>
+<hearings></hearings>
+</bill>
+</bills>
