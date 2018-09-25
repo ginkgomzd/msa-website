@@ -193,7 +193,12 @@ function custom_user_profile_fields($user){
     global $wpdb;
     $clients="SELECT client FROM `profile_match` group by client";
     $client_result = $wpdb->get_results($clients,ARRAY_A );
+    
+    $json = file_get_contents('http://localhost/msa_test/wp-content/themes/mainstreet-advocates/states.json');
+    $states=json_decode($json);
+  
     $default=esc_attr( get_the_author_meta( 'company', $user->ID ) );
+    $default_state=esc_attr( get_the_author_meta( 'state', $user->ID ) );
 
         
   ?>
@@ -212,6 +217,20 @@ function custom_user_profile_fields($user){
                             <?php } ?>
                </select>
             </td>
+        </tr> 
+        <tr>
+            <th><label for="company">State</label></th>
+            <td>
+               <select class="regular-text" id="state" name="state">
+                           <?php if(strlen($default_state)>0){  ?>
+                     <option value="<?php echo $default_state?>" selected><?php echo $default_state ?></option>
+                            <?php }  else {?>
+                    <option value="" selected disabled>Select a state</option>
+                            <?php  } foreach ($states as $state) {  ?>
+                    <option value="<?php echo $state->abbreviation; ?>" ><?php echo $state->abbreviation; ?></option>
+                            <?php } ?>
+               </select>
+            </td>
         </tr>
     </table>
   <?php
@@ -227,8 +246,21 @@ function save_custom_user_profile_fields($user_id){
 
     # save my custom field
     update_usermeta($user_id, 'company', $_POST['company']);
+    update_usermeta($user_id, 'state', $_POST['state']);
 }
 add_action('user_register', 'save_custom_user_profile_fields');
 add_action('profile_update', 'save_custom_user_profile_fields');
+
+
+
+function am_enqueue_admin_styles(){
+   
+
+    wp_register_style( 'am_admin_bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css' );
+    wp_enqueue_style( 'am_admin_bootstrap');
+
+}
+
+add_action( 'admin_enqueue_scripts', 'am_enqueue_admin_styles' );
 
 

@@ -1,6 +1,7 @@
 <?php /* Template Name: Legislation_list */ ?>
 <?php get_header(); ?>
 
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 
@@ -24,7 +25,7 @@ $client=esc_attr( get_the_author_meta( 'company', get_current_user_id()) );
 $query = "SELECT * FROM `legislation` 
         INNER join profile_match on legislation.id = profile_match.entity_id    
         where profile_match.client='$client' 
-        and profile_match.entity_type='legislation'";
+        and profile_match.entity_type='legislation' group by profile_match.entity_id order by legislation.id ASC";
 
 $legData = $wpdb->get_results($query);
 
@@ -32,13 +33,12 @@ $legData = $wpdb->get_results($query);
 
 ?>
 
-<div class="main">
+<div class="main" style="margin-left:5%; width:90%">
   <h2>Legislations lists</h2>       
   <table id="legislation" class="table table-striped">
     <thead>
       <tr>
-        <th><i class="fa fa-star" aria-hidden="true"></i>
-</th>
+        <th>Priority</th>
         <th>Session</th>
         <th>State</th> 
         <th>Type</th>
@@ -55,7 +55,13 @@ $legData = $wpdb->get_results($query);
     <tbody>
      <?php foreach ($legData as $data) { ?>
       <tr>
-       <td><input type="checkbox" name="rate" value="rate"></td>
+       <td style="text-align: center;">
+          <?php if($data->isPriority === '1'){ ?> 
+                <i class="star fa fa-star fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
+           <?php } else { ?>
+               <i class="star fa fa-star-o fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
+           <?php } ?>
+       </td>
         <td><?php echo $data->session; ?></td>
         <td><?php echo $data->state; ?></td>
         <td><?php echo $data->type; ?></td>  
@@ -75,6 +81,8 @@ $legData = $wpdb->get_results($query);
 <?php get_footer(); ?>
 <script>
 $(document).ready( function () {
+    
+// * Call up datatables */
    $('#legislation').DataTable( {
         dom: 'Bfrtip',
         buttons: ['print',
@@ -103,9 +111,26 @@ $(document).ready( function () {
                 }
             },
             'colvis'
-        ],
-        colReorder: true
+        ]
     } );
+    
+    
+// * Mark as priority */
+    $( ".star" ).click(function() {
+    
+        var id = $(this).attr('id');
+        $(this).toggleClass('fa-star fa-star-o');
+
+       $.ajax({
+                    type: "POST",
+                    url: "/msa_test/wp-content/themes/mainstreet-advocates/add-priority.php",
+                    data: ({value:id}),
+                    success: function(data) {
+                    }
+                });
+
+    });
+
     
 } );
 </script>
