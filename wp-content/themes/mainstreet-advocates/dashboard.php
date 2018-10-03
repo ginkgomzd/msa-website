@@ -22,11 +22,25 @@
     $cat_query="SELECT pname FROM `profile_match`";
     $categories = $wpdb->get_results($cat_query,OBJECT );
 
+
+function getNumber($state) {
+    global $wpdb;
+    $count_query="SELECT count(id) FROM `legislation` where state like '$state'";
+    $localauthoritypoints = $wpdb->get_var($count_query); 
+    
+    echo $localauthoritypoints;
+}
+
 ?>
+
+
+
 <div class="main">
     <div class="row">
         <div class="col-md-3">
             <h2>Filter</h2>
+            <h5>total records:<?php getNumber('%') ?> </h5>
+            
             <div class="form-group">
                 <select name="status" id="status">
                 <option value="0">Status</option>
@@ -57,6 +71,7 @@
     $json = file_get_contents('http://localhost/msa_test/wp-content/themes/mainstreet-advocates/states.json');
     $states=json_decode($json); 
 ?>
+
 <script>
     $(document).ready(function() {
         
@@ -68,12 +83,12 @@
             "dataProvider": {
                 "map": "usaLow",
                 "areas": [
-                    //                looping through states
+                    // ooping through states
                     <?php foreach ($states as $state) { ?> {
                         "id": "US-<?php echo $state->abbreviation; ?>",
                         "modalUrl": "<?php echo get_site_url() ?>/dashboard-list/?cat=" + parameter + "&st=<?php echo $state->abbreviation; ?>",
                         "selectable": true,
-                        "value": 500
+                        "value": <?php getNumber($state->abbreviation); ?>,
                     },
                     <?php  } ?>
                 ]
@@ -129,10 +144,8 @@
             myFunction(parameter);
         });
 
-    
-        
-    
-
     });
 
 </script>
+
+<?php get_footer(); ?>
