@@ -34,7 +34,7 @@ $legData = $wpdb->get_results($query);
 ?>
 
 <div class="main list-page">
- <a class="map-toggle-btn" href="#"><i class="fas fa-map-marker-alt"></i></a>
+ <a class="map-toggle-btn" href="<?php echo get_site_url()?>/dashboard/"><i class="fas fa-map-marker-alt"></i></a>
  <div class="container-fluid">
   <h2>Legislations lists</h2>       
   <table id="legislation" class="table table-striped">

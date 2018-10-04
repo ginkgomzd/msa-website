@@ -169,6 +169,9 @@ function theme_styles() {
     wp_enqueue_style( 'fontawesome_all_css', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css' );
 	wp_enqueue_style( 'main_css', get_template_directory_uri() . '/css/style.css' );
     wp_enqueue_style( 'datatables_css', get_template_directory_uri() . '/DataTables/datatables.min.css' );
+    wp_enqueue_style( 'select2', get_template_directory_uri() . '/css/select2.min.css' );
+    wp_enqueue_style( 'fancybox', '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css' );
+     wp_enqueue_style( 'export', 'https://www.amcharts.com/lib/3/plugins/export/export.css' );
 
 }
 
@@ -180,7 +183,12 @@ function theme_js() {
 	global $wp_scripts;
 	wp_enqueue_script( 'jquery_js', get_template_directory_uri() . '/js/jquery.js');
     wp_enqueue_script( 'bootstrap_js', get_template_directory_uri() . '/js/bootstrap.min.js' );
+    wp_enqueue_script( 'select2', get_template_directory_uri() . '/js/select2.min.js',true );
     wp_enqueue_script( 'datatable_js', get_template_directory_uri() . '/DataTables/datatables.min.js' );
+    wp_enqueue_script( 'amchart', get_template_directory_uri() . '/js/ammap.js',true );
+    wp_enqueue_script( 'fancybox', get_template_directory_uri() . '/js/jquery.fancybox.min.js' ,true);
+     wp_enqueue_script( 'usaLow', get_template_directory_uri() . '/js/usaLow.js' ,true);
+    wp_enqueue_script( 'light', get_template_directory_uri() . '/js/light.js' ,true);
 
 }
 

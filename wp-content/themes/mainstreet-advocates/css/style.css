@@ -1829,3 +1829,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#91a8c4', end
 .foot-links ul li a {
     color: #828282;
 }
+
+
+/*map chart*/
+
+ #chartdiv {
+        width: 90%;
+        height: 750px;
+    }
