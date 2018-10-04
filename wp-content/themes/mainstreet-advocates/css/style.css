@@ -394,7 +394,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#91a8c4', end
 
 .accordion-wrap .entry-title .arrow-d::before {
     content: "-";
-}
+} 
 
 /*--------------------------------------------------------------
 ## MAP 

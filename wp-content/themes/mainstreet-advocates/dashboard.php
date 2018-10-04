@@ -8,7 +8,17 @@
     }
 
 </style>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
+<script src="https://www.amcharts.com/lib/3/ammap.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<script src="https://www.amcharts.com/lib/3/maps/js/usaLow.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <?php 
 
     global $wpdb;
@@ -69,9 +79,6 @@
     $json = file_get_contents('http://localhost/msa_test/wp-content/themes/mainstreet-advocates/states.json');
     $states=json_decode($json); 
 ?>
-
-<?php get_footer(); ?>
-
 
 <script>
     $(document).ready(function() {
@@ -163,4 +170,4 @@
 
 </script>
 
-
+<?php get_footer(); ?>
