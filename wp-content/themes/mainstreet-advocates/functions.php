@@ -166,6 +166,7 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 //Load styles
 function theme_styles() {
 	wp_enqueue_style( 'bootstrap_css', get_template_directory_uri() . '/css/bootstrap.min.css' );
+    wp_enqueue_style( 'fontawesome_all_css', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css' );
 	wp_enqueue_style( 'main_css', get_template_directory_uri() . '/css/style.css' );
     wp_enqueue_style( 'datatables_css', get_template_directory_uri() . '/DataTables/datatables.min.css' );
 
@@ -175,14 +176,29 @@ add_action( 'wp_enqueue_scripts', 'theme_styles');
 
 //Load jscripts
 function theme_js() {
+    
 	global $wp_scripts;
-	wp_enqueue_script( 'jquery_js', get_template_directory_uri() . '/js/jquery.js' );
+	wp_enqueue_script( 'jquery_js', get_template_directory_uri() . '/js/jquery.js');
     wp_enqueue_script( 'bootstrap_js', get_template_directory_uri() . '/js/bootstrap.min.js' );
     wp_enqueue_script( 'datatable_js', get_template_directory_uri() . '/DataTables/datatables.min.js' );
 
 }
 
 add_action( 'wp_enqueue_scripts', 'theme_js');
+
+//// include custom jQuery
+//function shapeSpace_include_custom_jquery() {
+//
+//	wp_deregister_script('jquery');
+//	wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.3.1.min.js', array(), null, true);
+//
+//}
+//add_action('wp_enqueue_scripts', 'shapeSpace_include_custom_jquery');
+
+//function my_theme_scripts() {
+//    wp_enqueue_script( 'my-great-script', get_template_directory_uri() . '/js/my-great-script.js', array( 'jquery' ), '1.0.0', true );
+//}
+//add_action( 'wp_enqueue_scripts', 'my_theme_scripts' );
 
 /**
  * Addding Company info to user data
@@ -255,7 +271,6 @@ add_action('profile_update', 'save_custom_user_profile_fields');
 
 function am_enqueue_admin_styles(){
    
-
     wp_register_style( 'am_admin_bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css' );
     wp_enqueue_style( 'am_admin_bootstrap');
 
