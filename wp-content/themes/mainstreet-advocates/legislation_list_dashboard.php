@@ -1,14 +1,11 @@
 <?php /* Template Name: Legislation_list_dashboard */ ?>
 <?php get_header(); ?>
-
 <?php 
+
     $cat = $_GET["cat"];
     $state = $_GET["st"];
-    $priority = $_GET["pr"];
-
-//var_dump($cat);
-//var_dump($state);
-//var_dump($priority);
+    $priority = $_GET["pr"]; 
+    $bills = $_GET["bl"];
 
 ?>
 
@@ -34,11 +31,17 @@
 
     if($cat ==='undefined' ) {
         $cat='%';  
+        
     } 
 
-    if($priority ==='null' ) {
+    if($priority ===null ) {
         $priority='%';  
     } 
+
+//var_dump($cat);
+//var_dump($state);
+//var_dump($priority);
+//var_dump($bills);
 
     $client=esc_attr( get_the_author_meta( 'company', get_current_user_id()) );
 
