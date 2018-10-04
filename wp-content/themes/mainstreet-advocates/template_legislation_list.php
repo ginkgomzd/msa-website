@@ -29,7 +29,6 @@ $query = "SELECT * FROM `legislation`
 
 $legData = $wpdb->get_results($query);
 
-//var_dump($legData);
 
 ?>
 
@@ -67,7 +66,7 @@ $legData = $wpdb->get_results($query);
         <td><?php echo $data->type; ?></td>  
         <td><?php echo $data->number; ?></td>
         <td><?php echo $data->sponsor_name; ?></td>
-        <td><?php echo $data->title; ?></td> 
+        <td><a href="detailed-view/?id=<?php echo $data->id; ?>"><?php echo $data->title; ?></a></td> 
         <td><?php echo $data->abstract; ?></td>
         <td></td>
         <td></td>
