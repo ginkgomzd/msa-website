@@ -3,7 +3,7 @@
 
 <style>
     #chartdiv {
-        width: 100%;
+        width: 90%;
         height: 750px;
     }
 
@@ -34,12 +34,12 @@
     }
 
 ?>
-<div class="main">
+<div class="main map-page container-fluid">
     <div class="row">
-        <div class="col-md-3">
-            <h2>Filter</h2>
-            <h5>total records:
-                <?php getNumber('%') ?> </h5>
+        <div class="col-md-3 col-lg-2 filter">
+            <h4>Filter</h4>
+            <p>total records:
+                <span class="total-num"><?php getNumber('%') ?></span> </p>
             <div class="form-group">
                 <select name="bills" id="bills" class="select-b">
                     <option value="%">Bills</option>
@@ -69,7 +69,8 @@
             </select>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-lg-10">
+           <a class="map-toggle-btn" href="#"><i class="fa fa-list" aria-hidden="true"></i></a>
             <div id="chartdiv"></div>
         </div>
     </div>

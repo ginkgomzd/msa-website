@@ -396,6 +396,173 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#91a8c4', end
     content: "-";
 }
 
+/*--------------------------------------------------------------
+## MAP 
+--------------------------------------------------------------*/
+.map-page .filter .form-group select.select-b {
+    width: 100%;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 5px;
+    border: none;
+}
+
+.map-page .filter .form-group .select2-container {
+    width: 100% !important;
+}
+
+.map-page .filter {
+    background: #e5e9ee;
+    padding-top: 40px;
+}
+
+.total-num {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.map-toggle-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #022958;
+    padding: 15px 20px 15px 30px;
+    border-color: transparent;
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+    
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#91a8c4+0,002a5c+100 */
+background: rgb(145,168,196); /* Old browsers */
+background: -moz-linear-gradient(left, rgba(145,168,196,1) 0%, rgba(0,42,92,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, rgba(145,168,196,1) 0%,rgba(0,42,92,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, rgba(145,168,196,1) 0%,rgba(0,42,92,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#91a8c4', endColorstr='#002a5c',GradientType=1 ); /* IE6-9 */
+}
+
+.map-toggle-btn i {
+    color: #fff;
+    font-size: 24px;
+}
+
+.page-template-template_legislation_list .site-footer, .page-template-legislation_list_dashboard .site-footer, .page-template-dashboard .site-footer {
+    padding: 0;
+}
+
+.page-template-template_legislation_list .site-footer .site-info, .page-template-legislation_list_dashboard .site-footer .site-info, .page-template-dashboard .site-footer .site-info {
+font-size: 12px;
+    text-align: center;
+    border-top: 1px solid #eee;
+}
+
+#legislation.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f5f7f9;
+}
+
+#legislation.table {
+    -webkit-box-shadow: 0px 2px 7px 0px rgba(177,181,186,1);
+-moz-box-shadow: 0px 2px 7px 0px rgba(177,181,186,1);
+box-shadow: 0px 2px 7px 0px rgba(177,181,186,1);
+}
+
+#legislation.table.dataTable thead th, #legislation.table.dataTable thead td {
+    text-transform: uppercase;
+    border-bottom: none;
+}
+
+#legislation.table.dataTable.no-footer {
+    border-bottom: none;
+}
+.list-page {
+    position: relative;
+    padding-top: 40px;
+}
+
+.list-page #legislation_wrapper .dt-buttons button:before {
+     font-family: "Font Awesome 5 Free"; 
+    font-size: 18px;
+    color: #6582a4;
+    margin-right: 5px;
+}
+
+#legislation td i {
+    color: #6582a4;
+} 
+
+.list-page #legislation_wrapper .dt-buttons button {
+    background: #fff;
+    border:none;
+    font-weight: 700;
+}
+
+.list-page #legislation_wrapper .dt-buttons button.active {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.list-page #legislation_wrapper .dt-buttons button.buttons-columnVisibility.active:before {
+     content: "\f00c";
+    color: #1B998B;
+    font-size: 14px;
+}
+
+
+/*
+.list-page #legislation_wrapper .dt-buttons button span {
+    display: none;
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-collection span {
+    display: inline;
+}
+*/
+
+.list-page #legislation_wrapper .dt-buttons .buttons-print:before {
+     content: "\f02f";
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-copy:before {
+     content: "\f0c5";
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-excel:before {
+     content: "\f1c3";
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-csv:before {
+     content: "\f15b";
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-pdf:before {
+     content: "\f1c1";
+}
+
+.list-page #legislation_wrapper .dt-buttons .buttons-collection:before {
+     content: "\f070";
+}
+
+.list-page .dataTables_wrapper .dataTables_paginate .paginate_button.current, .list-page .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #e5e9ee;
+    border: none;
+}
+
+.list-page .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #343a40;
+    border: none;
+}
+
+
+
+.modal-xl{
+        max-width:1440px;
+        
+    }
+    .modal-content{
+        padding: 20px;
+    }
+
+
 /*
 # Content
 ----------------------------------*/
