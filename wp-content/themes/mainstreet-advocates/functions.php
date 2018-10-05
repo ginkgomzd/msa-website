@@ -172,7 +172,6 @@ function theme_styles() {
     wp_enqueue_style( 'select2', get_template_directory_uri() . '/css/select2.min.css' );
     wp_enqueue_style( 'fancybox', '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css' );
      wp_enqueue_style( 'export', 'https://www.amcharts.com/lib/3/plugins/export/export.css' );
-
 }
 
 add_action( 'wp_enqueue_scripts', 'theme_styles');
@@ -187,8 +186,9 @@ function theme_js() {
     wp_enqueue_script( 'datatable_js', get_template_directory_uri() . '/DataTables/datatables.min.js' );
     wp_enqueue_script( 'amchart', get_template_directory_uri() . '/js/ammap.js',true );
     wp_enqueue_script( 'fancybox', get_template_directory_uri() . '/js/jquery.fancybox.min.js' ,true);
-     wp_enqueue_script( 'usaLow', get_template_directory_uri() . '/js/usaLow.js' ,true);
+    wp_enqueue_script( 'usaLow', get_template_directory_uri() . '/js/usaLow.js' ,true);
     wp_enqueue_script( 'light', get_template_directory_uri() . '/js/light.js' ,true);
+    wp_enqueue_script( 'export', get_template_directory_uri() . '/js/export.min.js' ,true);
 
 }
 
@@ -285,5 +285,39 @@ function am_enqueue_admin_styles(){
 }
 
 add_action( 'admin_enqueue_scripts', 'am_enqueue_admin_styles' );
+
+
+
+// custom function  - returns profiles / categories matches function
+function getCategories($ent_id) {
+    global $wpdb;
+    $cat_query="SELECT pname FROM `profile_match` where entity_id = '$ent_id'";
+    $categories = $wpdb->get_results($cat_query,OBJECT);
+
+    foreach($categories as $categorie){
+        $name[] = $categorie->pname;
+    }
+    
+    if($name !==null){
+        return implode(", ",$name);;
+    }
+}
+
+// custom function  - returns keywords function
+function getKeyword($ent_id) {
+    global $wpdb;
+    $key_query="SELECT keyword FROM `profile_keyword` where profile_match_id = '$ent_id'";
+    $keywords = $wpdb->get_results($key_query,OBJECT);
+
+    foreach($keywords as $keyword){
+        $key_name[] = $keyword->keyword;
+    }
+
+    if($key_name !==null){
+        return implode(", ",$key_name);;
+    }
+
+}
+
 
 

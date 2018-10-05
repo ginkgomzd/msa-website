@@ -4,9 +4,7 @@
     $id =$_GET["id"];
     $query = "SELECT * FROM `legislation` where id = $id";
     $row=$wpdb->get_row($query,OBJECT);
-
 ?>
-
 <div class="container">
     <div class="row">
         <!--       main  content -->
@@ -188,11 +186,7 @@
     </div>
   </div>
 </div>
-
-
-
 <?php get_footer() ?>
-
 <script>
     $(document).ready(function() {
         
