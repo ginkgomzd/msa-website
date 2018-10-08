@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <select name="category" id="category" class="select-b">
-                    <option value="%">Category</option>
+                    <option value="null">Category</option>
                    <?php foreach ($categories as $category) { ?>
                     <option value="<?php echo $category->pname ?>"><?php echo $category->pname ?></option>
                    <?php } ?>
@@ -39,7 +39,7 @@
                 <select name="priority" id="priority" class="select-b">
                     <option value="%">Prioritized</option>
                     <option value="1">Yes</option> 
-                    <option value="NULL">No</option>
+                    <option value="0">No</option>
                 </select>
             </div>
             <div class="form-group">
@@ -61,8 +61,18 @@
 
 <script>
     $(document).ready(function() {
+        
+        var bills;
+        var category = 'null';
+        var priority = null;
+       
+        
+        
 
         function myFunction(parameter) {
+            
+            var parameter = category + '&pr=' + priority + '&bl=' + bills;
+            
             var map = AmCharts.makeChart("chartdiv", {
                 "type": "map",
                 "theme": "light",
@@ -86,9 +96,9 @@
                     "rollOverColor": "#404040",
                     "rollOverOutlineColor": "#FFFFFF",
                 },
-                "export": {
-                    "enabled": true
-                },
+//                "export": {
+//                    "enabled": true
+//                },
                 "valueLegend": {
                     "right": 20,
                     "minValue": "little",
@@ -111,10 +121,7 @@
             
         }
 
-        var bills;
-        var category;
-        var priority;
-        var parameter;
+        
 
         myFunction();
 
@@ -140,6 +147,9 @@
             bills = $('#bills').val();
             parameter = category + '&pr=' + priority + '&bl=' + bills;
             myFunction(parameter);
+            console.log(priority);
+            console.log('c'+category);
+            console.log('b'+ bills);
         });
         
         

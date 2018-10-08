@@ -299,7 +299,7 @@ function getCategories($ent_id) {
     }
     
     if($name !==null){
-        return implode(", ",$name);;
+        return implode(", ",$name);
     }
 }
 
@@ -314,10 +314,17 @@ function getKeyword($ent_id) {
     }
 
     if($key_name !==null){
-        return implode(", ",$key_name);;
+        return implode(", ",$key_name);
     }
 
 }
 
+// custom function  - returns keywords function
+function getCleint($ent_id) {
+    global $wpdb;
+    $client_query="SELECT client FROM `profile_match` where entity_id = '$ent_id'";
+    $client = $wpdb->get_row($client_query,OBJECT);
 
-
+   
+     return $client->client;
+    }

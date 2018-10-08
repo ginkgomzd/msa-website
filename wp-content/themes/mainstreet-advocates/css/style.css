@@ -2017,3 +2017,8 @@ background: #6582a4;
     width: 90%;
     height: 750px;
 }
+
+/*tables filters*/
+.footerStyle{
+    display: table-row-group;
+}

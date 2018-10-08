@@ -13,7 +13,7 @@ class Legislation extends \GinkgoStreetLabs\Model {
   public $abstract;
   public $full_text_url;
   public $sponsor_name;
-  public $sponsor_url;
+  public $sponsor_url; 
 
   protected $profile_matches = array();
 

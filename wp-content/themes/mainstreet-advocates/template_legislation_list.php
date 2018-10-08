@@ -17,6 +17,8 @@
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="<?php echo get_template_directory_uri() ?>/js/select2.min.js"></script>
+
 
 <?php 
 global $wpdb;
@@ -34,106 +36,160 @@ $legData = $wpdb->get_results($query);
 ?>
 
 <div class="main list-page">
- <a class="map-toggle-btn" href="<?php echo get_site_url()?>/dashboard/"><i class="fas fa-map-marker-alt"></i></a>
- <div class="container-fluid">
-  <h2>Legislations lists</h2>       
-  <table id="legislation" class="table table-striped">
-    <thead>
-      <tr>
-        <th>Priority</th>
-        <th>Session</th>
-        <th>State</th> 
-        <th>Type</th>
-        <th>Number</th>
-        <th>Sponsor(s)</th>
-        <th>Title</th>
-        <th>Abstract</th>
-        <th>Updated</th>
-        <th>Status</th>
-        <th>Categorie(s)</th> 
-        <th>Latest Action</th>
-      </tr>
-    </thead>
-    <tbody>
-     <?php foreach ($legData as $data) { ?>
-      <tr>
-       <td style="text-align: center;">
-          <?php if($data->isPriority === '1'){ ?> 
-                <i class="star fa fa-star fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
-           <?php } else { ?>
-               <i class="star fa fa-star-o fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
-           <?php } ?>
-       </td>
-        <td><?php echo $data->session; ?></td>
-        <td><?php echo $data->state; ?></td>
-        <td><?php echo $data->type; ?></td>  
-        <td><?php echo $data->number; ?></td>
-        <td><?php echo $data->sponsor_name; ?></td>
-        <td><?php echo $data->title; ?></td> 
-        <td><?php echo $data->abstract; ?></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <?php } ?>
-    </tbody>
-  </table>
-  </div>
+    <a class="map-toggle-btn" href="<?php echo get_site_url()?>/dashboard/"><i class="fas fa-map-marker-alt"></i></a>
+    <div class="container-fluid">
+        <h2>Legislations lists</h2>
+        <table id="legislation" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Priority</th>
+                    <th>Session</th>
+                    <th>State</th>
+                    <th>Type</th>
+                    <th>Number</th>
+                    <th>Sponsor(s)</th>
+                    <th>Title</th>
+                    <th>Abstract</th>
+                    <th>Updated</th>
+                    <th>Status</th>
+                    <th>Categorie(s)</th>
+                    <th>Latest Action</th>
+                </tr>
+            </thead>
+             <tfoot class="footerStyle">
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <?php foreach ($legData as $data) { ?>
+                <tr>
+                    <td style="text-align: center;">
+                        <?php if($data->isPriority === '1'){ ?>
+                        <i class="star fa fa-star fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
+                        <?php } else { ?>
+                        <i class="star fa fa-star-o fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <?php echo $data->session; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->state; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->type; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->number; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->sponsor_name; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->title; ?>
+                    </td>
+                    <td>
+                        <?php echo $data->abstract; ?>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 <?php get_footer(); ?>
 <script>
-$(document).ready( function () {
-    
-// * Call up datatables */
-   $('#legislation').DataTable( {
-        dom: 'Bfrtip',
-        buttons: ['print',
-            {
-                extend: 'copyHtml5',
-                exportOptions: {
-                    columns: [ 0, ':visible' ]
-                }
-            },
-            {
-                extend: 'excelHtml5',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-            {
-                extend: 'csvHtml5',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-            {
-                extend: 'pdfHtml5',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-            'colvis'
-        ]
-    } );
-    
-    
-// * Mark as priority */
-    $( ".star" ).click(function() {
-    
-        var id = $(this).attr('id');
-        $(this).toggleClass('fa-star fa-star-o');
+    $(document).ready(function() {
 
-       $.ajax({
-                    type: "POST",
-                    url: "/msa_test/wp-content/themes/mainstreet-advocates/add-priority.php",
-                    data: ({value:id}),
-                    success: function(data) {
+        // * Call up datatables */
+        $('#legislation').DataTable({
+            dom: 'Bfrtip',
+            buttons: ['print',
+                {
+                    extend: 'copyHtml5',
+                    exportOptions: {
+                        columns: [0, ':visible']
                     }
+                },
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                'colvis'
+            ],
+            initComplete: function() {
+                this.api().columns([1, 2, 3, 4, 5, 6]).every(function() {
+                    var column = this;
+                    var select = $('<select class="select-b"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function() {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function(d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
                 });
+            }
+        });
+
+
+        // * Mark as priority */
+        $(".star").click(function() {
+
+            var id = $(this).attr('id');
+            $(this).toggleClass('fa-star fa-star-o');
+
+            $.ajax({
+                type: "POST",
+                url: "/msa_test/wp-content/themes/mainstreet-advocates/add-priority.php",
+                data: ({
+                    value: id
+                }),
+                success: function(data) {}
+            });
+
+        });
+        
+        $('.select-b').select2();
+
 
     });
 
-    
-} );
 </script>
