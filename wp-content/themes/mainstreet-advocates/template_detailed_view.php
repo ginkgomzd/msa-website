@@ -82,27 +82,51 @@
             <br>
             <section id="latest-action">
                 <h3>Latest Action</h3>
+                
+                <?php
+                switch (strtolower ($row->status_standard_val)) {
+                    case "prefiled":
+                        $status = 1;
+                        break;
+                    case "introduced, first chamber":
+                        $status = 2;
+                        break;
+                    case "assigned to committee, first chamber":
+                        $status = 3;
+                        break; 
+                    case "hearing scheduled":
+                        $status = 4;
+                        break;
+                    case "passed by first committee":
+                        $status = 5;
+                        break; 
+                    case "passed by first house":
+                        $status = 6;
+                        break; 
+                    case "assigned to committee, second chamber":
+                        $status = 7;
+                        break;  
+                    case "passed committee, second chamber":
+                        $status = 8;
+                        break; 
+                    case "passed second chamber":
+                        $status = 9;
+                        break;
+                    case "transmitted to governor":
+                        $status = 10;
+                        break;
+                }         
+                ?>
                 <div class="progress" style="height:40px">
+                   <?php for ($x = 1; $x <= $status; $x++) { ?>
                     <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        1
+                        <?php echo $x; ?>
                     </div>
-                    <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        2
-                    </div>
-                    <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        3
-                    </div>
-                    <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        4
-                    </div>
-                    <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        5
-                    </div>
-                    <div class="progress-bar" role="progressbar" style="width:10%; height:40px">
-                        6
-                    </div>
+                    <?php } ?>
                 </div>
-
+                <div>
+                    <span><strong>Status </strong><?php echo $status .'-'. $row->status_standard_val; ?> </span>
+                </div>
             </section>
             <br>
             <section id="notes">
