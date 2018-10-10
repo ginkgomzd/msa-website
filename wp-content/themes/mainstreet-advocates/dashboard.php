@@ -1,9 +1,9 @@
 <?php /* Template Name: Dashboard */ ?>
 <?php get_header(); ?>
 <?php 
-    global $wpdb;
-    $cat_query="SELECT pname FROM `profile_match`";
-    $categories = $wpdb->get_results($cat_query,OBJECT );
+    
+    $user_id=get_current_user_id();
+    $categories = explode(",",getCategoriesByUser($user_id)); 
 
     function getNumber($state) {
         global $wpdb;
@@ -31,7 +31,7 @@
                 <select name="category" id="category" class="select-b">
                     <option value="null">Category</option>
                    <?php foreach ($categories as $category) { ?>
-                    <option value="<?php echo $category->pname ?>"><?php echo $category->pname ?></option>
+                    <option value="<?php echo trim($category); ?>"><?php echo $category;?></option>
                    <?php } ?>
             </select>
             </div>

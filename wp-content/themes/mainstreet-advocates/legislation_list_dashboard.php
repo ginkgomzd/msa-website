@@ -3,6 +3,7 @@
 <?php 
 
     $cat = $_GET["cat"];
+    $cat = trim($cat);
     $state = $_GET["st"];
     $priority = $_GET["pr"]; 
     $bills = $_GET["bl"];
@@ -44,7 +45,7 @@
 //////var_dump($state);
 //var_dump($priority);
 //////var_dump($bills);
-
+    $user_id=get_current_user_id();
     $client=esc_attr( get_the_author_meta( 'company', get_current_user_id()) );
     
 
@@ -62,8 +63,8 @@
                 and isPriority like '$priority'";
 
     $legData = $wpdb->get_results($query);
+        
 
-         
               
 ?>
 
@@ -107,16 +108,18 @@
             
           <?php if($cat !== 'test' ) {       
                    
-         
+      
         foreach ($legData as $data) {
 
-                    $catCheck = getCategories($data->id);
+                    $catClientCheck = getCategoriesByID($data->id);
+                    $catClientCheck = strtolower($catClientCheck);
+            
                     $clientCheck = getCleint($data->id);
 
-//        var_dump($catCheck);
+
         
-        if( strpos($catCheck,$cat) !== false  and  $clientCheck === $client ) {
-            
+        if( strpos($catClientCheck,strtolower($cat)) !== false and  $clientCheck === $client ) {
+
 ?>
                 <tr>
                     <td style="text-align: center;">
@@ -153,7 +156,7 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <?php echo getCategories($data->id)?>
+                        <?php echo getCategoriesByID($data->id)?>
                     </td>
                     <td></td>
                 </tr>
@@ -163,15 +166,14 @@
           
 
 } else {
-    
-//    var_dump('enters');
-               foreach ($legData as $data) {
-                   
-//                   var_dump($data);
-                   
-                    $catCheck = getCategories($data->id);
-                    $clientCheck = getCleint($data->id);
-       ?>
+
+        foreach ($legData as $data) {
+            
+                   $catCheck = getCategoriesByID($data->id);
+                   $clientCheck = getCleint($data->id);
+
+        if($clientCheck === $client ) {
+?>
                 <tr>
                     <td style="text-align: center;">
                         <?php if($data->isPriority === '1'){ ?>
@@ -206,14 +208,12 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <?php echo getCategories($data->id)?>
+                        <?php echo getCategoriesByID($data->id)?>
                     </td>
                     <td></td>
                 </tr>
-           
-
-<?php } 
-  
+<?php   } 
+    }
 } ?>
 
 

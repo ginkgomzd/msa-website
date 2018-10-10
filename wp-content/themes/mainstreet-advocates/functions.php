@@ -289,9 +289,9 @@ add_action( 'admin_enqueue_scripts', 'am_enqueue_admin_styles' );
 
 
 // custom function  - returns profiles / categories matches function
-function getCategories($ent_id) {
+function getCategoriesByID($id) {
     global $wpdb;
-    $cat_query="SELECT pname FROM `profile_match` where entity_id = '$ent_id'";
+    $cat_query="SELECT pname FROM `profile_match` where entity_id = $id ";
     $categories = $wpdb->get_results($cat_query,OBJECT);
 
     foreach($categories as $categorie){
@@ -300,6 +300,36 @@ function getCategories($ent_id) {
     
     if($name !==null){
         return implode(", ",$name);
+    }
+}
+
+function getCategoriesByClient($ent_name) {
+    global $wpdb;
+    $ent_name= strtolower($ent_name);
+    $cat_query="SELECT pname FROM `profile_match` where client like '%$ent_name%' GROUP BY pname";
+    $categories = $wpdb->get_results($cat_query,OBJECT);
+
+    foreach($categories as $categorie){
+        $name[] = $categorie->pname;
+    }
+    
+    if($name !==null){
+        return implode(", ",$name);
+    }
+}
+
+// custom function  - returns profiles / categories matches function
+function getCategoriesByUser($user_id) {
+    global $wpdb;
+    $cat_query2="SELECT front FROM `user_profile` where user_id='$user_id' and front IS NOT NULL";
+    $categories2 = $wpdb->get_results($cat_query2,OBJECT);
+
+    foreach($categories2 as $categorie2){
+        $name2[] = $categorie2->front;
+    }
+    
+    if($name2 !==null){
+        return implode(", ",$name2);
     }
 }
 
