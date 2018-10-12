@@ -218,7 +218,7 @@ function custom_user_profile_fields($user){
     $clients="SELECT client FROM `profile_match` group by client";
     $client_result = $wpdb->get_results($clients,ARRAY_A );
     
-    $json = file_get_contents('http://localhost/msa_test/wp-content/themes/mainstreet-advocates/states.json');
+    $json = file_get_contents(get_site_url().'/msa_test/wp-content/themes/mainstreet-advocates/states.json');
     $states=json_decode($json);
   
     $default=esc_attr( get_the_author_meta( 'company', $user->ID ) );
@@ -318,14 +318,24 @@ function getCategoriesByClient($ent_name) {
     }
 }
 
+function getCategoriesByClient2($ent_name) {
+    global $wpdb;
+    $ent_name= strtolower($ent_name);
+    $cat_query="SELECT * FROM `profile_match` where client like '%$ent_name%' GROUP BY pname";
+    $categories = $wpdb->get_results($cat_query,OBJECT);
+
+    return $categories;
+    
+}
+
 // custom function  - returns profiles / categories matches function
 function getCategoriesByUser($user_id) {
     global $wpdb;
-    $cat_query2="SELECT front FROM `user_profile` where user_id='$user_id' and front IS NOT NULL";
+    $cat_query2="SELECT lfront FROM `user_profile` where user_id='$user_id' and lfront IS NOT NULL";
     $categories2 = $wpdb->get_results($cat_query2,OBJECT);
 
     foreach($categories2 as $categorie2){
-        $name2[] = $categorie2->front;
+        $name2[] = $categorie2->lfront;
     }
     
     if($name2 !==null){

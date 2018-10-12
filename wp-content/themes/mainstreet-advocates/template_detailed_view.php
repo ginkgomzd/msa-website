@@ -57,7 +57,7 @@
                           Categorie(s)  
                         </td>
                         <td>
-                          <?php echo getCategories($id) ?>  
+                          <?php echo getCategoriesByID($id) ?>  
                         </td>
                     </tr>
                     <tr>
@@ -84,35 +84,36 @@
                 <h3>Latest Action</h3>
                 
                 <?php
-                switch (strtolower ($row->status_standard_val)) {
-                    case "prefiled":
+                $key = $row->status_standardkey;
+                switch ((int)$key) {
+                    case ((int)$key < 10000):
                         $status = 1;
                         break;
-                    case "introduced, first chamber":
+                    case ((int)$key >=  10000 && (int)$key < 20000):
                         $status = 2;
                         break;
-                    case "assigned to committee, first chamber":
+                    case ((int)$key >=  20000 && (int)$key < 30000):
                         $status = 3;
                         break; 
-                    case "hearing scheduled":
+                    case((int)$key >=  30000 && (int)$key < 40000):
                         $status = 4;
                         break;
-                    case "passed by first committee":
+                    case ((int)$key >=  40000 && (int)$key < 50000):
                         $status = 5;
                         break; 
-                    case "passed by first house":
+                    case ((int)$key >=  50000 && (int)$key < 60000):
                         $status = 6;
                         break; 
-                    case "assigned to committee, second chamber":
+                    case ((int)$key >=  60000 && (int)$key <70000):
                         $status = 7;
                         break;  
-                    case "passed committee, second chamber":
+                    case ((int)$key >= 70000 && (int)$key < 80000):
                         $status = 8;
                         break; 
-                    case "passed second chamber":
+                    case ((int)$key >= 80000 && (int)$key < 90000):
                         $status = 9;
                         break;
-                    case "transmitted to governor":
+                    case ((int)$key >= 90000 && (int)$key < 100000):
                         $status = 10;
                         break;
                 }         

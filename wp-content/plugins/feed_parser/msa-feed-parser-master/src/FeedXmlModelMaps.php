@@ -159,6 +159,7 @@ class FeedXmlModelMaps {
     $leg->sponsor_url = Xml::findSingle($el, 'sponsor/URL');
     $leg->status_date = Xml::findSingle($el, 'status/statusdt');
     $leg->status_val = Xml::findSingle($el, 'status/statusval');
+    $leg->status_standardkey = Xml::findSingle($el, 'status/standardkey');
     $leg->status_standard_val = Xml::findSingle($el, 'status/standardval'); 
     $leg->status_val = Xml::findSingle($el, 'status/statusval');
     $leg->status_url = Xml::findSingle($el, 'statusurl');

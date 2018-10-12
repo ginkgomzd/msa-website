@@ -15,7 +15,8 @@ class Legislation extends \GinkgoStreetLabs\Model {
   public $sponsor_name;
   public $sponsor_url; 
   public $status_date;
-  public $status_val;  
+  public $status_val; 
+  public $status_standardkey;  
   public $status_standard_val; 
   public $status_url; 
 
