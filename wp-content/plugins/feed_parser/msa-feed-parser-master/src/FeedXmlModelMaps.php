@@ -126,6 +126,7 @@ class FeedXmlModelMaps {
     $match->client = array_shift($pname_fields);
 
     $keywords = Xml::find($el, '*/keyword');
+      
     if (is_array($keywords)) {
       $keywords =
         array_map(function($keyword){
@@ -136,9 +137,22 @@ class FeedXmlModelMaps {
 
       $match->setKeywords($keywords);
     }
+    
+    return $match;
+  } 
+    
+    private static function fillBillMatch(Model\RelatedBills $match, \SimpleXMLElement $el) {
 
+        $match->url = Xml::findSingle($el, 'url');
+        $match->type = Xml::findSingle($el, 'type');
+        $match->number = Xml::findSingle($el, 'number');
+
+
+    
     return $match;
   }
+
+    
 
     /**
    * Populate Legislation members from SimpleXMLElement.
@@ -165,7 +179,9 @@ class FeedXmlModelMaps {
     $leg->status_url = Xml::findSingle($el, 'statusurl');
 
     $leg->setMatches(self::createProfileMatchModels($el));
+    $leg->setBills(self::createBillsMatchModels($el));
 
+      
     return $leg;
   }
 
@@ -201,6 +217,8 @@ class FeedXmlModelMaps {
     // Inconsitent with other entities, no external ID exists, so fake it:
     $hea->external_id = md5($hea->date . $hea->time . $hea->house . $hea->committee);
   }
+    
+   
 
   /**
    * Creates ActionText models for each one represented in the feed snippet.
@@ -256,14 +274,48 @@ class FeedXmlModelMaps {
     }
 
     $models = array();
+
     if (is_array($profiles)) {
       foreach($profiles as $profile) {
         $model = new Model\ProfileMatch();
+          
         self::fillProfileMatch($model, $profile);
         $models[] = $model;
       }
     }
 
     return $models;
-  }
+  }  
+    
+    /**
+   * Creates RelatedBills models for each one represented in the feed snippet.
+   *
+   * Delegates the mapping of XML fields to model fields.
+   *
+   * @param \SimpleXMLElement $el
+   * @return \MainStreetAdvocates\Model\BillMatch[]
+   */
+    
+    private static function createBillsMatchModels(\SimpleXMLElement $el) {
+         $bills = Xml::find($el, 'relatedbills/relatedbill');
+
+    if (is_a($profiles, 'SimpleXMLElement')) {
+      $bills = [$bills];
+    }
+
+    $models = array();
+
+    if (is_array($bills)) {
+      foreach($bills as $bill) {
+        $model = new Model\RelatedBills();
+          
+        self::fillBillMatch($model, $bill);
+        $models[] = $model;
+      }
+    }
+
+    return $models;
+  } 
+    
+  
 }

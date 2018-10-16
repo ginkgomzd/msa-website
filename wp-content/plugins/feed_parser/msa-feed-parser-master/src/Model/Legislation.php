@@ -21,10 +21,11 @@ class Legislation extends \GinkgoStreetLabs\Model {
   public $status_url; 
 
   protected $profile_matches = array();
+  protected $bills_matches = array();
 
   function __construct() {
     parent::__construct();
-    $this->childCollections = array('profile_matches');
+    $this->childCollections = array('profile_matches','bills_matches');
   }
 
   protected function getTableName() {
@@ -34,4 +35,9 @@ class Legislation extends \GinkgoStreetLabs\Model {
   public function setMatches($array) {
     $this->profile_matches = $array;
   }
+
+  public function setBills($array) {
+    $this->bills_matches = $array;
+  }
+
 }

@@ -25,4 +25,5 @@ class ProfileMatch extends \GinkgoStreetLabs\Model {
     $this->keywords = $array;
   }
 
+
 }
