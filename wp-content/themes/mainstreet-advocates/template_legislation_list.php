@@ -1,5 +1,6 @@
-<?php /* Template Name: Legislation_list */ ?>
-<?php get_header(); ?>
+<?php /* Template Name: Legislation_list_dashboard */ ?>
+<?php get_header() ?>
+<?php $url = get_site_url(); ?>
 
 <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
@@ -17,47 +18,45 @@
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+
 <script type="text/javascript" charset="utf8" src="<?php echo get_template_directory_uri() ?>/js/select2.min.js"></script>
 
-
 <?php 
-global $wpdb;
-$client=esc_attr( get_the_author_meta( 'company', get_current_user_id()) );
-
-$query = "SELECT * FROM `legislation` 
-        INNER join profile_match on legislation.id = profile_match.entity_id    
-        where profile_match.client='$client' 
-        and profile_match.entity_type='legislation' group by profile_match.entity_id order by legislation.id ASC";
-
-$legData = $wpdb->get_results($query);
-
-//var_dump($legData);
-
+    $user_id=get_current_user_id();
+    $categories = explode(",",getCategoriesByUser($user_id)); 
 ?>
 
 <div class="main list-page">
     <a class="map-toggle-btn" href="<?php echo get_site_url()?>/dashboard/"><i class="fas fa-map-marker-alt"></i></a>
     <div class="container-fluid">
         <h2>Legislations lists</h2>
-        <table id="legislation" class="table table-striped">
+        <div>
+            <div class="form-group">
+                <select name="category" id="category" class="select-b">
+                    <option value="null">Select Category</option>
+                   <?php foreach ($categories as $category) { ?>
+                    <option value="<?php echo trim($category); ?>"><?php echo $category;?></option>
+                   <?php } ?>
+            </select>
+            </div>
+        </div>
+        <table id="legislation" class="display" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>Priority</th>
-                    <th>Session</th>
+                    <th>ID</th>
                     <th>State</th>
+                    <th>Session</th>
                     <th>Type</th>
                     <th>Number</th>
                     <th>Sponsor(s)</th>
                     <th>Title</th>
-                    <th>Abstract</th>
-                    <th>Updated</th>
-                    <th>Status</th>
                     <th>Categorie(s)</th>
-                    <th>Latest Action</th>
                 </tr>
             </thead>
-             <tfoot class="footerStyle">
+
+            <tfoot>
                 <tr>
+					<th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -65,61 +64,21 @@ $legData = $wpdb->get_results($query);
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+				</tr>
             </tfoot>
-            <tbody>
-                <?php foreach ($legData as $data) { ?>
-                <tr>
-                    <td style="text-align: center;">
-                        <?php if($data->isPriority === '1'){ ?>
-                        <i class="star fa fa-star fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
-                        <?php } else { ?>
-                        <i class="star fa fa-star-o fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php echo $data->session; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->state; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->type; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->number; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->sponsor_name; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->title; ?>
-                    </td>
-                    <td>
-                        <?php echo $data->abstract; ?>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <?php } ?>
-            </tbody>
         </table>
     </div>
 </div>
+
 <?php get_footer(); ?>
 <script>
     $(document).ready(function() {
+        
+        var param = '%';
 
-        // * Call up datatables */
-        $('#legislation').DataTable({
-            dom: 'Bfrtip',
+        function myfunction(param) {
+            $('#legislation').dataTable({
+                 dom: 'Bfrtip',
             buttons: ['print',
                 {
                     extend: 'copyHtml5',
@@ -147,47 +106,48 @@ $legData = $wpdb->get_results($query);
                 },
                 'colvis'
             ],
-            initComplete: function() {
-                this.api().columns([1, 2, 3, 4, 5, 6]).every(function() {
-                    var column = this;
-                    var select = $('<select class="select-b"><option value=""></option></select>')
-                        .appendTo($(column.footer()).empty())
-                        .on('change', function() {
-                            var val = $.fn.dataTable.util.escapeRegex(
-                                $(this).val()
-                            );
-
-                            column
-                                .search(val ? '^' + val + '$' : '', true, false)
-                                .draw();
-                        });
-
-                    column.data().unique().sort().each(function(d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-            }
-        });
-
-
-        // * Mark as priority */
-        $(".star").click(function() {
-
-            var id = $(this).attr('id');
-            $(this).toggleClass('fa-star fa-star-o');
-
-            $.ajax({
-                type: "POST",
-                url: "/msa_test/wp-content/themes/mainstreet-advocates/add-priority.php",
-                data: ({
-                    value: id
-                }),
-                success: function(data) {}
+                "bProcessing": true,
+                "sAjaxSource": '/msa_test/wp-content/themes/mainstreet-advocates/legapi.php?cat=' + param + '',
+                "aoColumns": [{
+                        mData: 'id',
+                        "mRender": function ( source, type, val ) {
+                            return "<a href='<?php echo $url; ?>/detailed-view/?id="+source+"'>"+source+"</a>";
+                          }
+                    },
+                    {
+                        mData: 'state'
+                    },{
+                        mData: 'session'
+                    },
+                    {
+                        mData: 'type'
+                    },{
+                        mData: 'number'
+                    },{
+                        mData: 'sponsor_name',
+                        "mRender": function ( source, type, row, val ) {
+                            return "<a href='"+row.sponsor_url+"' target='_blank'>"+source+"</a>";
+                          }
+                    },{
+                        mData: 'title',
+                        "mRender": function ( source, type, row, val ) {
+                            return "<a href='<?php echo $url; ?>/detailed-view/?id="+row.id+"'>"+source+"</a>";
+                          }
+                    },{
+                        mData: 'categories'
+                    }
+                ]
             });
+        }
 
-        });
+        myfunction(param);
         
-        $('.select-b').select2();
+        $('#category').on('change', function() {
+            var value = this.value; 
+            $('#example').dataTable().fnDestroy();
+             myfunction(value);
+        });
+
 
 
     });

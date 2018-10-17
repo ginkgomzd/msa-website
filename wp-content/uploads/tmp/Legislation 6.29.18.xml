@@ -1,0 +1,45 @@
+<bills>
+<bill id="5a8f874b488" sscode="SC17">
+<number>
+<session>2017-2018</session>
+  <code>SC</code>
+  <type>S</type>
+  <number>1043</number>
+</number>
+<sponsor>
+<name><![CDATA[Sen. Ross Turner (REP-SC)]]></name>
+<URL><![CDATA[http://www.scstatehouse.gov/member.php?code=1847727051]]></URL>
+</sponsor>
+<title>
+<![CDATA[SC Abandoned Buildings and Revitalization Act]]>
+</title>
+<abstract>
+<![CDATA[A BILL TO EXTEND THE PROVISIONS OF THE SOUTH CAROLINA ABANDONED BUILDINGS REVITALIZATION ACT AS CONTAINED IN CHAPTER 67, TITLE 12 OF THE 1976 CODE UNTIL DECEMBER 31, 2025. ]]>
+</abstract>
+<status>
+<statusdt>05/10/2018</statusdt><statusval><![CDATA[House - Conference committee appointed Cole, Simrill, Rutherford (House Journal-page 87)]]></statusval>
+<standardkey>72000</standardkey><standardval>In conference or conference pending</standardval>
+</status>
+<billurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=5a8f874b488&rtype=text]]>
+</billurl>
+<statusurl>
+<![CDATA[http://www.cqstatetrack.com/texis/redir?id=5a8f874b488&rtype=status]]>
+</statusurl>
+<profiles>
+<profile id="5363fd942b4" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Historic Tax Credit]]></pname>
+<keywords>
+  <keyword><![CDATA[historic]]></keyword>
+  <keyword><![CDATA[rehabilitate]]></keyword>
+  <keyword><![CDATA[rehabilitated]]></keyword>
+  <keyword><![CDATA[rehabilitation]]></keyword>
+  <keyword><![CDATA[tax credit]]></keyword>
+  <keyword><![CDATA[tax credits]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+<relatedbills></relatedbills>
+<hearings></hearings>
+</bill>
+</bills>

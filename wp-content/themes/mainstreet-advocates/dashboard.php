@@ -55,7 +55,8 @@
     </div>
 </div>
 <?php 
-    $json = file_get_contents(get_site_url().'/msa_test/wp-content/themes/mainstreet-advocates/states.json');
+    $url  = get_site_url();
+    $json = file_get_contents($url.'/wp-content/themes/mainstreet-advocates/states.json');
     $states=json_decode($json); 
 ?>
 

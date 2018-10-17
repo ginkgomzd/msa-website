@@ -218,7 +218,7 @@ function custom_user_profile_fields($user){
     $clients="SELECT client FROM `profile_match` group by client";
     $client_result = $wpdb->get_results($clients,ARRAY_A );
     
-    $json = file_get_contents(get_site_url().'/msa_test/wp-content/themes/mainstreet-advocates/states.json');
+    $json = file_get_contents(get_site_url().'/wp-content/themes/mainstreet-advocates/states.json');
     $states=json_decode($json);
   
     $default=esc_attr( get_the_author_meta( 'company', $user->ID ) );
@@ -360,6 +360,15 @@ function getKeyword($ent_id) {
 }
 
 // custom function  - returns keywords function
+function getAllClients() {
+    global $wpdb;
+    $client_query="SELECT client FROM `profile_match` group by client";
+    $client = $wpdb->get_results($client_query,OBJECT);
+    
+    return $client;
+    }
+
+// custom function  - returns keywords function
 function getCleint($ent_id) {
     global $wpdb;
     $client_query="SELECT client FROM `profile_match` where entity_id = '$ent_id'";
@@ -368,3 +377,14 @@ function getCleint($ent_id) {
    
      return $client->client;
     }
+
+// custom function  - returns related documents function
+function getRelatedBills($ent_id) {
+    global $wpdb;
+    $bill_query="SELECT * FROM `related_bill` where legislation_id='$ent_id'";
+   
+    $bills = $wpdb->get_results($bill_query,OBJECT);
+
+    return $bills;
+    
+}

@@ -72,7 +72,8 @@ $states=json_decode($json);
                     <tbody>
                         <?php
                         $i=1;
-                        $categories = explode(",",getCategoriesByClient('adm'));
+                        
+                        $categories = explode(",",getCategoriesByClient('Intuit'));
 //                        var_dump($categories);
                         foreach ($categories as $category) {
                                     $leg_string = str_replace(' ', '', $category);

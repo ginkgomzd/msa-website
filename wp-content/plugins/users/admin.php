@@ -18,7 +18,33 @@ function user_plugin_setup_menu(){
         'dashicons-networking',//icon_url,
         '5'//position
     );
+    
+     add_submenu_page(
+        'user_management',
+        'Clients', //page title
+        'Clients', //menu title
+        'manage_options', //capability,
+        'Clients',//menu slug
+        'client_page' //callback function
+    );
+    
+    add_submenu_page(
+        'user_management',
+        'Clients_users', //page title
+        'Clients users', //menu title
+        'manage_options', //capability,
+        'Clients users',//menu slug
+        'user_page' //callback function
+    );
 
+}
+
+function client_page(){
+    
+    //defining page template folder
+    $dir = plugin_dir_path( __FILE__ ). '/';
+    load_template( $dir . 'clients_management.php' );
+   
 }
 
 function user_page(){

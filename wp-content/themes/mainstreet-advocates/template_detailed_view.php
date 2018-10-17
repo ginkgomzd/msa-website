@@ -126,7 +126,7 @@
                     <?php } ?>
                 </div>
                 <div>
-                    <span><strong>Status </strong><?php echo $status .'-'. $row->status_standard_val; ?> </span>
+                    <span><strong>Status </strong><?php echo $status .'-'. $row->status_val; ?> </span>
                 </div>
             </section>
             <br>
@@ -170,6 +170,26 @@
                     
                     
                     
+            </section>
+            <br>
+            <section id="Additional-info" class="opening-hours">
+                <h2>Related Documents</h2>
+                   
+                <br>
+                <div class="hearings">
+                    <?php  
+    
+                        $bills = getRelatedBills($id);
+                        foreach($bills as $bill){
+                    
+                    ?> 
+                    <ul class="p-0 m-0">
+                        <li>Type<span><?php echo $bill-> type; ?></span></li>
+                        <li>Number <span><?php echo $bill-> number; ?></span></li>
+                        <li>URL <span><a href="<?php echo $bill-> url; ?>">check here</a></span></li>
+                    </ul>
+                    <?php } ?>
+                </div>
             </section>
             <br>
             <section id="Additional-info" class="opening-hours">
