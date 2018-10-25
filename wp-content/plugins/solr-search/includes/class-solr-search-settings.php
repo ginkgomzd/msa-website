@@ -38,22 +38,14 @@ class Solr_Search_Settings {
 	 */
 	public $settings = array();
 
-    /**
-     * Available DB connection for plugin.
-     * @var     object
-     * @access  public
-     * @since   1.0.0
-     */
-    public $solrDB = NULL;
-
-    public $solrHost = '';
-    public $solrPort = '';
-    public $solrCore = '';
+	public $solrConnector = '';
 
 	public function __construct ( $parent ) {
 		$this->parent = $parent;
 
 		$this->base = 'wpt_';
+
+        $this->solrConnector = new Solr_Search_Connector();
 
 		// Initialise settings
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
@@ -63,6 +55,9 @@ class Solr_Search_Settings {
 
 		// Add settings page to menu
 		add_action( 'admin_menu' , array( $this, 'add_menu_item' ) );
+
+		// Overwrite the default wordpress search
+        add_filter('get_search_form', array( $this ,'solr_search_create') );
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ) , array( $this, 'add_settings_link' ) );
@@ -195,9 +190,29 @@ class Solr_Search_Settings {
             )
         );
 
+        $settings['scrapper'] = array(
+            'title'					=> __( 'Scrapper', 'solr-search-template' ),
+            'description'			=> __( 'Connect to the Apache Solr Server.', 'solr-search-template' ),
+            'fields'				=> array(
+            )
+        );
+
         $settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
 
         return $settings;
+    }
+
+    /**
+     * Create the solr search
+     * @return void
+     */
+
+    public function solr_search_create() {
+        $solr_enable = get_option('wpt_solr_search_server_enable');
+
+        if($solr_enable == 'on') {
+            require(plugin_dir_path(__FILE__) . '../template/class-solr-search-table-search.php');
+        }
     }
 
 	/**
@@ -308,6 +323,9 @@ class Solr_Search_Settings {
 				do_settings_sections( $this->parent->_token . '_settings' );
 				$html .= ob_get_clean();
 
+
+        $html .= '<p>' . $this->solrConnector->getConnectionMessage() . '</p>';
+
 				$html .= '<p class="submit">' . "\n";
 					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
 					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'solr-search' ) ) . '" />' . "\n";
@@ -318,8 +336,9 @@ class Solr_Search_Settings {
 		echo $html;
 	}
 
+	// Insert template and shortcode at the same time
 	public function solr_shortcode($atts) {
-	    include '../template/class-solr-search-table-search-display.php';
+	    require(plugin_dir_path(__FILE__) . '../template/class-solr-search-table-search-display.php');
     }
 
 	/**

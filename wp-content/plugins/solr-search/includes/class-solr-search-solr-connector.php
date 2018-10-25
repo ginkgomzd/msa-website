@@ -1,61 +1,72 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 require_once('lib/SolrPHPClient/Apache/Solr/Service.php');
 
 class Solr_Search_Connector {
 
-    private $solr = '';
+    public $solr = NULL;
+    public $solrMessage = '';
+    public $offset = 0;
+    public $limit = 20;
+    public $queryResult = '';
 
-    private function solr_connect() {
-        $options = get_option('solr_search_server', array() );
-        echo "<pre>";
-            $options;
-        echo "</pre>";
-        if($options != null) {
-            $solr = new Apache_Solr_Service('localhost', '7575', '/solr/collection1');
+    public function __construct() {
+        $this->solrSeverConnection();
+    }
+
+    public function solrSeverConnection() {
+        $server_username = get_option('wpt_solr_search_server_username');
+        $server_password = get_option('wpt_solr_search_server_pass');
+        $server_host = get_option('wpt_solr_search_server_host');
+        $server_port = get_option('wpt_solr_search_server_port');
+        $server_path = get_option('wpt_solr_search_server_path');
+        $server_core =  get_option('wpt_solr_search_server_core');
+
+        if( ($server_host && $server_port && $server_path) != null ) {
+            $this->solr = new Apache_Solr_Service($server_host, $server_port, $server_path);
+
+            if ( !$this->solr->ping() ) {
+                $this->connectionMessage('Solr service not responding.');
+            } else {
+                $this->connectionMessage('Connected to Solr server.');
+            }
         }
     }
 
-    public function display_field ( $data = array(), $post = false, $echo = true )
-    {
+    public function setQueries( $queries ) {
 
-        // Get field info
-        if (isset($data['field'])) {
-            $field = $data['field'];
-        } else {
-            $field = $data;
-        }
+        foreach ($queries as $query) {
+            $response = $this->solr->search($query, $this->offset, $this->limit);
 
-        // Check for prefix on option name
-        $option_name = '';
-        if (isset($data['prefix'])) {
-            $option_name = $data['prefix'];
-        }
+            if ($response->getHttpStatus() == 200) {
 
-        // Get saved data
-        $data = '';
-        if ($post) {
+                if ($response->response->numFound > 0) {
 
-            // Get saved field data
-            $option_name .= $field['id'];
-            $option = get_post_meta($post->ID, $field['id'], true);
+                    foreach ($response->response->docs as $doc) {
 
-            // Get data to display in field
-            if (isset($option)) {
-                $data = $option;
+                        echo "$doc->id <br /> $doc->title <br/>";
+                        $this->queryResult = $doc->id;
+                    }
+                    echo '<br />';
+                }
+            } else {
+                echo $response->getHttpStatusMessage();
             }
-
-        } else {
-
-            // Get saved option
-            $option_name .= $field['id'];
-            $option = get_option($option_name);
-
-            // Get data to display in field
-            if (isset($option)) {
-               echo $data = $option;
-            }
-
         }
+    }
+
+    public function getQueriesResults() {
+
+    }
+
+    public function connectionMessage( $msg ) {
+        $this->solrMessage = $msg;
+    }
+
+    public function getConnectionMessage() {
+
+        return '<p>' . $this->solrMessage . '</p>';
     }
 }

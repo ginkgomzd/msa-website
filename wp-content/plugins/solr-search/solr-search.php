@@ -20,11 +20,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Load plugin class files
 require_once( 'includes/class-solr-search.php' );
 require_once( 'includes/class-solr-search-settings.php' );
+require_once( 'includes/class-solr-search-solr-connector.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-solr-search-admin-api.php' );
 require_once( 'includes/lib/class-solr-search-post-type.php' );
 require_once( 'includes/lib/class-solr-search-taxonomy.php' );
+
+// Load plugin templates
+
 
 /**
  * Returns the main instance of Solr_Search to prevent the need to use globals.
