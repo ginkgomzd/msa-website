@@ -1,0 +1,118 @@
+<bills>
+<bill id="588997b08d8" sscode="NH17">
+<number>
+<session>2017-2018</session>
+  <code>NH</code>
+  <type>HB</type>
+  <number>656</number>
+</number>
+<hearings>
+<hearing> <date>10/10/2018</date> <time><![CDATA[ 10:00 AM]]></time> <house><![CDATA[ [House] ]]></house> <committee><![CDATA[ - Ways and Means - ]]></committee> <place><![CDATA[ LOB Rm 202]]></place> </hearing>
+</hearings>
+<profiles>
+<profile id="5351cd501547" status="tracking">
+  <pname><![CDATA[ Heineken|General|Marijuana]]></pname>
+<keywords>
+  <keyword><![CDATA[cannabis]]></keyword>
+  <keyword><![CDATA[classified]]></keyword>
+  <keyword><![CDATA[grow]]></keyword>
+  <keyword><![CDATA[growing]]></keyword>
+  <keyword><![CDATA[grown]]></keyword>
+  <keyword><![CDATA[grows]]></keyword>
+  <keyword><![CDATA[growth]]></keyword>
+  <keyword><![CDATA[legal]]></keyword>
+  <keyword><![CDATA[legalization]]></keyword>
+  <keyword><![CDATA[legalized]]></keyword>
+  <keyword><![CDATA[legalizes]]></keyword>
+  <keyword><![CDATA[legally]]></keyword>
+  <keyword><![CDATA[license]]></keyword>
+  <keyword><![CDATA[licensed]]></keyword>
+  <keyword><![CDATA[licensee]]></keyword>
+  <keyword><![CDATA[licensees]]></keyword>
+  <keyword><![CDATA[licenses]]></keyword>
+  <keyword><![CDATA[marijuana]]></keyword>
+  <keyword><![CDATA[marijuana'']]></keyword>
+  <keyword><![CDATA[recreational]]></keyword>
+  <keyword><![CDATA[tax]]></keyword>
+  <keyword><![CDATA[taxed]]></keyword>
+  <keyword><![CDATA[taxes]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+</bill>
+<bill id="5a1095502019" sscode="NH17">
+<number>
+<session>2017-2018</session>
+  <code>NH</code>
+  <type>HB</type>
+  <number>1512</number>
+</number>
+<hearings>
+<hearing> <date>10/10/2018</date> <time><![CDATA[ 10:00 AM]]></time> <house><![CDATA[ [House] ]]></house> <committee><![CDATA[ - Ways and Means - ]]></committee> <place><![CDATA[ LOB Rm 202]]></place> </hearing>
+</hearings>
+<profiles>
+<profile id="56be19ac359a" status="tracking">
+  <pname><![CDATA[ Enhanced|General|LIH Tax Credit]]></pname>
+<keywords>
+  <keyword><![CDATA[affordable housing]]></keyword>
+  <keyword><![CDATA[housing tax credit]]></keyword>
+  <keyword><![CDATA[low-income housing tax credit]]></keyword>
+  <keyword><![CDATA[tax credit]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+</bill>
+<bill id="5a1095511d5" sscode="NH17">
+<number>
+<session>2017-2018</session>
+  <code>NH</code>
+  <type>HB</type>
+  <number>1558</number>
+</number>
+<hearings>
+<hearing> <date>10/10/2018</date> <time><![CDATA[ 10:00 AM]]></time> <house><![CDATA[ [House] ]]></house> <committee><![CDATA[ - Ways and Means - ]]></committee> <place><![CDATA[ LOB Rm 202]]></place> </hearing>
+</hearings>
+<profiles>
+<profile id="585abb3f1f4" status="tracking">
+  <pname><![CDATA[ Upwork|General|Marketplace Tax]]></pname>
+<keywords>
+  <keyword><![CDATA[service]]></keyword>
+  <keyword><![CDATA[website]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+</bill>
+<bill id="58902f383b5" sscode="NH17">
+<number>
+<session>2017-2018</session>
+  <code>NH</code>
+  <type>SB</type>
+  <number>205</number>
+</number>
+<hearings>
+<hearing> <date>10/10/2018</date> <time><![CDATA[ 10:00 AM]]></time> <house><![CDATA[ [House] ]]></house> <committee><![CDATA[ - Ways and Means - ]]></committee> <place><![CDATA[ LOB Rm 202]]></place> </hearing>
+</hearings>
+<profiles>
+<profile id="5363fdb122" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Capco]]></pname>
+<keywords>
+  <keyword><![CDATA[small business investment company]]></keyword>
+  </keywords>
+</profile>
+<profile id="565c62bb1d9" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Rural Tax Credit]]></pname>
+<keywords>
+  <keyword><![CDATA[rural business investment company]]></keyword>
+  </keywords>
+</profile>
+<profile id="58e53d482e9" status="tracking">
+  <pname><![CDATA[ Enhanced|General|Tiger]]></pname>
+<keywords>
+  <keyword><![CDATA[anniversary of the closing date]]></keyword>
+  <keyword><![CDATA[rural business investment company]]></keyword>
+  <keyword><![CDATA[small business investment company]]></keyword>
+  </keywords>
+</profile>
+</profiles>
+</bill>
+</bills>

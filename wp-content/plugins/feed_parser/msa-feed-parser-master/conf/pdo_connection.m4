@@ -1,0 +1,5 @@
+<?php
+
+define('GSL_PDO_DB_DATABASE', 'm4_FP_CONF_DATABASE_m4');
+define('GSL_PDO_DB_USER', 'm4_FP_CONF_DB_USER_m4');
+define('GSL_PDO_DB_PASSWORD', 'm4_FP_CONF_DB_PASSWORD_m4');
