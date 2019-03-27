@@ -8,7 +8,7 @@
 include( '../../../../wp-load.php' );
 function retrive_data( $entity_type, $client_id, $import_table_id = [] ) {
 	global $wpdb;
-	if (empty($import_table_id)){
+	if ( empty( $import_table_id ) ) {
 		return;
 	}
 	$import_list = implode( ',', $import_table_id );
@@ -34,12 +34,22 @@ WHERE lu.import_table_id IN ({$import_list}) GROUP BY reg.id", OBJECT );
 	}
 }
 
+function getClientImports( $client_id ) {
+	global $wpdb;
+	$result = $wpdb->get_results( "SELECT DISTINCT xml_import_timestamp,entity_type,id FROM import_table 
+											   WHERE client_id = {$client_id} ORDER BY xml_import_timestamp DESC LIMIT 25", OBJECT );
+
+	return $result;
+}
+
+
 if ( isset( $_POST['client_id'] ) && isset( $_POST['status'] ) ) {
 	$client_id = $_POST['client_id'];
-	$status    = $_POST['status'];
-	switch ( $status ) {
+	$import_id = $_POST['status'];
+
+	/*switch ( $status ) {
 		case 'last_7':
-			$out = $wpdb->get_results( "SELECT id,xml_import_timestamp,entity_type FROM unit_tests.import_table 
+			$out = $wpdb->get_results( "SELECT id,xml_import_timestamp,entity_type FROM import_table 
 											   WHERE client_id = {$client_id} AND 
 											   DATE_SUB(xml_import_timestamp, INTERVAL 7 day)", OBJECT );
 			break;
@@ -49,11 +59,13 @@ if ( isset( $_POST['client_id'] ) && isset( $_POST['status'] ) ) {
 									GROUP BY entity_type", OBJECT );
 			break;
 		case 'last_30':
-			$out = $wpdb->get_results( "SELECT id,xml_import_timestamp,entity_type FROM unit_tests.import_table 
+			$out = $wpdb->get_results( "SELECT id,xml_import_timestamp,entity_type FROM import_table 
 											   WHERE client_id = {$client_id} AND 
 											   DATE_SUB(xml_import_timestamp, INTERVAL 30 day)", OBJECT );
 			break;
-	}
+	}*/
+	$out    = $wpdb->get_results( "SELECT id,xml_import_timestamp,entity_type FROM import_table 
+											   WHERE client_id = {$client_id} AND id={$import_id}", OBJECT );
 	$data   = [ 'regulation' => [], 'hearing' => [], 'legislation' => [], 'import_ids' => [] ];
 	$groups = [ 'regulation' => [], 'hearing' => [], 'legislation' => [] ];
 	foreach ( $out as $import ) {
@@ -66,15 +78,56 @@ if ( isset( $_POST['client_id'] ) && isset( $_POST['status'] ) ) {
 		$data[ $group ] = retrive_data( $group, $client_id, $ids );
 	}
 	echo json_encode( $data );
-}else if(isset($_POST['import_ids']) && isset($_POST['action'])){
-	$action = $_POST['action'];
-	$import_ids = implode(',',$_POST['import_ids']);
-	$client = $_POST['client'];
-	$update = $wpdb->query("UPDATE import_table SET curation_date = NOW() WHERE id IN ({$import_ids})");
+} else if ( isset( $_POST['import_ids'] ) && isset( $_POST['action'] ) ) {
+	$action     = $_POST['action'];
+	$import_ids = implode( ',', $_POST['import_ids'] );
+	$client     = $_POST['client'];
+	$update     = $wpdb->query( "UPDATE import_table SET curation_date = NOW() WHERE id IN ({$import_ids})" );
 	if ( false === $update ) {
-		echo json_encode(['status'=>false,"message"=>"There was error during approving upload, please contact administrator."]);
-	}else{
-		echo json_encode(['status' => true,"message"=>"Successfully approved upload for client, {$client}. Email will be sent when bills are ready in the system."]);
+		echo json_encode( [
+			'status'  => false,
+			"message" => "There was error during approving upload, please contact administrator."
+		] );
+	} else {
+		echo json_encode( [
+			'status'  => true,
+			"message" => "Successfully approved upload for client, {$client}. Email will be sent when bills are ready in the system."
+		] );
 	}
 	exit();
+} else if ( isset( $_POST['action'] ) && $_POST['action'] === 'get_import_comment_for_user' ) {
+	$_result = $wpdb->get_row( $wpdb->prepare(
+		"SELECT id,comment FROM import_mail_comments 
+				WHERE import_table_id = %d 
+				AND user_id = %d",$_POST['import_id'],$_POST['user_id']
+	), OBJECT );
+
+	if($_result) {
+		echo json_encode( ["status"=>true,"comment"=>$_result->comment] );
+	}elsE{
+		echo json_encode(["status"=>false]);
+	}
+}else if(isset($_POST['action']) && $_POST['action'] === 'update_import_comment_for_user'){
+	$all_users = $_POST['all_users'];
+	if($all_users){
+		//$wpdb->query($wpdb->prepare("SELECT * FROM "))
+	}else {
+		$_result = $wpdb->update( 'import_mail_comments', [ "comment" => $_POST['comment'] ], [
+			'import_table_id' => $_POST['import_id'],
+			'user_id'         => $_POST['user_id']
+		] );
+		if ( $_result ) {
+			echo json_encode( [ "status" => true ] );
+		} elsE {
+			echo json_encode( [ "status" => false ] );
+		}
+	}
+}else if ( isset( $_POST['client_id'] ) && isset( $_POST['action'] ) ) {
+	$action    = $_POST['action'];
+	$client_id = $_POST['client_id'];
+	switch ( $action ) {
+		case 'get_imports':
+			echo json_encode( getClientImports( $client_id ) );
+			break;
+	}
 }

@@ -29,6 +29,8 @@
 
 <script type="text/javascript" charset="utf8" src="<?php echo get_template_directory_uri() ?>/js/select2.min.js"></script>
 
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
 <?php 
     global $wpdb;
 
@@ -89,8 +91,7 @@
                 </tr>
             </thead>
             <tfoot class="footerStyle">
-				<tr>
-					<th></th>
+                <tr>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -101,12 +102,13 @@
                     <th></th>
                     <th></th>
                     <th></th>
-				</tr>
-			</tfoot>
+                    <th></th>
+                </tr>
+            </tfoot>
             <tbody>
-            
-            
-          <?php if($cat !== 'test' ) {       
+
+
+                <?php if($cat !== 'test' ) {       
                    
       
         foreach ($legData as $data) {
@@ -123,7 +125,7 @@
 ?>
                 <tr>
                     <td style="text-align: center;">
-<!--                       <?php echo $data->isPriority ?>-->
+                        <!--                       <?php echo $data->isPriority ?>-->
                         <?php if($data->isPriority === '1'){ ?>
                         <i class="star fa fa-star fa-lg" aria-hidden="true" id="<?php echo $data->number; ?>"></i>
                         <p style="display:none">
@@ -148,8 +150,11 @@
                     <td>
                         <?php echo $data->sponsor_name; ?>
                     </td>
-                    <td><a href="detailed-view/?id=<?php echo $data->id; ?>">
-                            <?php echo $data->title; ?></a></td>
+                    <td>
+                        <a href="detailed-view/?id=<?php echo $data->id; ?>">
+                            <?php echo $data->title; ?>
+                        </a>
+                    </td>
                     <td>
                         <?php echo $data->abstract; ?>
                     </td>
@@ -200,8 +205,11 @@
                     <td>
                         <?php echo $data->sponsor_name; ?>
                     </td>
-                    <td><a href="detailed-view/?id=<?php echo $data->id; ?>">
-                            <?php echo $data->title; ?></a></td>
+                    <td>
+                        <a href="detailed-view/?id=<?php echo $data->id; ?>">
+                            <?php echo $data->title; ?>
+                        </a>
+                    </td>
                     <td>
                         <?php echo $data->abstract; ?>
                     </td>
@@ -212,12 +220,12 @@
                     </td>
                     <td></td>
                 </tr>
-<?php   } 
+                <?php   } 
     }
 } ?>
 
 
-  </tbody>
+            </tbody>
         </table>
     </div>
 </div>
@@ -227,6 +235,7 @@
 
         // * Call up datatables */
         $('#legislation').DataTable({
+            responsive: true,
             dom: 'Bfrtip',
             buttons: ['print',
                 {
@@ -256,28 +265,28 @@
                 'colvis'
             ],
             initComplete: function() {
-				this.api().columns([1,2,3]).every(function() {
-					var column = this;
-					var select = $('<select class="select2"><option value=""></option></select>')
-					.appendTo($(column.footer()).empty())
-					.on('change', function() {
-						var val = $.fn.dataTable.util.escapeRegex(
-						$(this).val()
-						);
-						
-						column
-						.search(val ? '^' + val + '$' : '', true, false)
-						.draw();
-					});
-					
-					column.data().unique().sort().each(function(d, j) {
-						select.append('<option value="' + d + '">' + d + '</option>')
-					});
-				});
-			}
-            
+                this.api().columns([1, 2, 3]).every(function() {
+                    var column = this;
+                    var select = $('<select class="select2"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function() {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function(d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+
         });
-        
+
         // * Add 2select */
         $('.select2').select2();
 
@@ -301,5 +310,4 @@
 
 
     });
-
 </script>

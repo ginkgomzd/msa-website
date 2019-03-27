@@ -1,10 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,300,400,500,600,700');
 
-html, body {
+html {
+    max-height: -moz-calc(100% - 32px);
+    max-height: -webkit-calc(100% - 32px);
+    max-height: calc(100% - 32px);
     height: 100%;
+    box-sizing: content-box;
 }
 
 body {
+    height: 100%;
     color: #404040;
     font-size: 16px;
     line-height: 1.8;
@@ -23,6 +28,52 @@ img {
 *:focus {
     outline: none;
 }
+
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    z-index: 1;
+    padding: 7px 10px;
+    line-height: 1.5 !important;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    /*
+        position: absolute;
+    top: -12px;
+    background: #fff;
+    padding: 0;
+    margin-left: 10px;
+*/
+}
+
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ddd !important;
+}
+
 
 /*--------------------------------------------------------------
 # Links
@@ -80,11 +131,12 @@ a:active {
 }
 
 ul.nav-menu {
-/*    background: #728395;*/
+    /*    background: #728395;*/
     background: #495A6E;
 }
 
-.main-navigation ul.nav-menu a, .main-navigation ul.nav-menu a:visited {
+.main-navigation ul.nav-menu a,
+.main-navigation ul.nav-menu a:visited {
     color: #fff;
     font-size: 14px;
 }
@@ -96,15 +148,17 @@ ul.nav-menu li.view-as-btn {
     padding-left: 25px;
 }
 
-.main-navigation ul li.focus.view-as-btn  > ul, .main-navigation ul li:hover.view-as-btn  > ul {
+.main-navigation ul li.focus.view-as-btn > ul,
+.main-navigation ul li:hover.view-as-btn > ul {
     right: 0;
     background: #627183;
 }
 
-.main-navigation ul li.focus.view-as-btn, .main-navigation ul li:hover.view-as-btn  {
+.main-navigation ul li.focus.view-as-btn,
+.main-navigation ul li:hover.view-as-btn {
     background: #526376;
     text-decoration: none;
-    
+
 }
 
 .main-navigation ul li.view-as-admin {
@@ -124,17 +178,17 @@ ul.nav-menu li.view-as-btn {
 .main-navigation ul li.focus.view-as-btn > a {
     position: relative;
 }
- 
+
 /*replace the content value with the
 corresponding value from the list below*/
- 
+
 .main-navigation ul li.view-as-btn > a:before {
     content: "\f06e";
     font-family: "Font Awesome 5 Free";
     font-style: normal;
     font-weight: normal;
     text-decoration: inherit;
-/*--adjust as necessary--*/
+    /*--adjust as necessary--*/
     color: #a1a9b2;
     font-size: 14px;
     position: absolute;
@@ -224,6 +278,13 @@ corresponding value from the list below*/
     width: 0;
     left: 50%;
 }
+
+
+.main .container-fluid > h2 {
+    margin-bottom: 40px;
+}
+
+
 
 /*
 # Main Menu
@@ -460,12 +521,28 @@ corresponding value from the list below*/
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#91a8c4', endColorstr='#002a5c', GradientType=1);
     /* IE6-9 */
     color: #fff;
+    transition: background ease-in-out 3s;
+}
+
+.button.gradient-bg:hover {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#04295d+0,04295d+100 */
+background: rgb(4,41,93); /* Old browsers */
+background: -moz-linear-gradient(left, rgba(0, 42, 92, 1) 0%, rgba(145, 168, 196, 1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, rgba(0, 42, 92, 1) 0%,rgba(145, 168, 196, 1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, rgba(0, 42, 92, 1) 0%,rgba(145, 168, 196, 1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#04295d', endColorstr='#04295d',GradientType=1 ); /* IE6-9 */
+    cursor: pointer;
+}
+
+.button.grey {
+    background: #c7d2de;
+    border-bottom: none;
 }
 
 
-button.dt-button, div.dt-button, a.dt-button {
-    
-}
+button.dt-button,
+div.dt-button,
+a.dt-button {}
 
 
 
@@ -523,6 +600,7 @@ button.dt-button, div.dt-button, a.dt-button {
 --------------------------------------------------------------*/
 
 /*full height*/
+
 .page-template-dashboard #page {
     display: flex;
     flex-direction: column;
@@ -538,14 +616,40 @@ button.dt-button, div.dt-button, a.dt-button {
     height: 35px;
 }
 
+
 .page-template footer {
     height: 23px;
     background: none;
 }
 
-.map-page, .map-page > .row,  .map-page > .row > div  {
+.map-page,
+.map-page > .row,
+.map-page > .row > div {
     height: 100%;
 }
+
+.numbers-table {
+    font-size: 12px;
+    line-height: 1.2;
+} 
+
+.numbers-table td {
+    padding: 3px;
+}
+
+.numbers-table td:nth-child(2) {
+    font-weight: 500;
+}
+
+.numbers-heading {
+    font-size: 16px;
+    border-bottom: 2px solid #dde4ea;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+
 
 .map-page .filter .form-group select.select-b {
     width: 100%;
@@ -656,7 +760,8 @@ button.dt-button, div.dt-button, a.dt-button {
     width: auto;
 }
 
-.list-page #legislation_wrapper .dt-buttons button, .list-page #dataTableDiv .dt-button-collection button.dt-button {
+.list-page #legislation_wrapper .dt-buttons button,
+.list-page #dataTableDiv .dt-button-collection button.dt-button {
     background: #fff;
     border: none;
     font-weight: 700;
@@ -704,19 +809,23 @@ button.dt-button, div.dt-button, a.dt-button {
 
 
 
-.list-page #legislation_wrapper .dt-buttons button.active, .dt-buttons button.buttons-columnVisibility.active {
+.list-page #legislation_wrapper .dt-buttons button.active,
+.dt-buttons button.buttons-columnVisibility.active {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
 }
 
-.list-page #legislation_wrapper .dt-buttons button.buttons-columnVisibility.active:before, .list-page #dataTableDiv .dt-buttons button.buttons-columnVisibility.active:before  {
+.list-page #legislation_wrapper .dt-buttons button.buttons-columnVisibility.active:before,
+.list-page #dataTableDiv .dt-buttons button.buttons-columnVisibility.active:before {
     content: "\f00c";
     color: #1B998B;
     font-size: 14px;
     position: relative;
     left: auto;
 }
+
+
 
 
 /*
@@ -764,7 +873,7 @@ button.dt-button, div.dt-button, a.dt-button {
     border: none;
 }
 
-.btn-small  {
+.btn-small {
     display: inline-block;
     padding: 10px 20px;
     margin-right: 0px;
@@ -784,13 +893,13 @@ button.dt-button, div.dt-button, a.dt-button {
 
 .map-page .select2-container--default .select2-selection--single {
     border-radius: 30px;
-    border:1px solid #ccc;
-    height:36px;
+    border: 1px solid #ccc;
+    height: 36px;
     padding: 5px;
 }
 
 .map-page .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height:36px;
+    height: 36px;
     right: 10px;
 }
 
@@ -811,33 +920,48 @@ button.dt-button, div.dt-button, a.dt-button {
 }
 
 .select2-dropdown {
-border: 1px solid #ccc !important;    
+    border: 1px solid #ccc !important;
 }
 
-#dataTableDiv table.dataTable thead th, #dataTableDiv table.dataTable thead td, #legislation.table.dataTable thead th, #legislation.table.dataTable thead td {
+#dataTableDiv table.dataTable thead th,
+#dataTableDiv table.dataTable thead td,
+#legislation.table.dataTable thead th,
+#legislation.table.dataTable thead td,
+#legislation.dataTable thead th,
+#legislation.dataTable thead td {
     line-height: 1;
     vertical-align: middle;
     text-transform: uppercase;
-        background-color: #abb5c3;
+    background-color: #abb5c3;
     color: #fff;
     border-bottom: none;
-/*
+    /*
     border-bottom: none;
     border-top: none;
     color: #fff;
     font-weight: normal;
     background-color: #617ea2;
 */
-/*    padding: 5px 18px;*/
+    /*    padding: 5px 18px;*/
 }
 
-#dataTableDiv table.dataTable.stripe tbody tr.odd, #dataTableDiv table.dataTable.display tbody tr.odd, #dataTableDiv table.dataTable.display tbody tr.odd>.sorting_1 {
-/*    background-color: #E5E9EE;*/
+
+
+#dataTableDiv table.dataTable.stripe tbody tr.odd,
+#dataTableDiv table.dataTable.display tbody tr.odd,
+#dataTableDiv table.dataTable.display tbody tr.odd > .sorting_1,
+#legislation.dataTable tr.odd,
+#legislation.dataTable tbody tr.odd > .sorting_1 {
+    /*    background-color: #E5E9EE;*/
     background-color: #fff;
 }
 
 
-#dataTableDiv table.dataTable.stripe tbody tr.even, #dataTableDiv table.dataTable.display tbody tr.even, #dataTableDiv table.dataTable.display tbody tr.even>.sorting_1 {
+#dataTableDiv table.dataTable.stripe tbody tr.even,
+#dataTableDiv table.dataTable.display tbody tr.even,
+#dataTableDiv table.dataTable.display tbody tr.even > .sorting_1,
+#legislation.dataTable tr.even,
+#legislation.dataTable tbody tr.even > .sorting_1 {
     background-color: #f1f3f6;
 }
 
@@ -845,44 +969,59 @@ border: 1px solid #ccc !important;
     float: none;
     position: absolute;
     right: 0;
-    top:-50px;
+    top: -50px;
+}
+
+.page-template-template_prioritized_bills #dataTableDiv .dt-buttons {
+    top: 0px;
+}
+
+.page-template-template_prioritized_bills .dataTables_wrapper .dataTables_filter {
+    float: none;
+    text-align: left;
 }
 
 .list-page .list-filter {
     padding-right: 550px;
     width: 100%;
-/*    background-color: #819ab9;*/
+    /*    background-color: #819ab9;*/
 }
 
 .list-page .list-filter .form-group label {
     display: block;
     line-height: 1;
-/*    color: #fff;*/
+    /*    color: #fff;*/
     margin-bottom: 3px;
 }
 
 #dataTableDiv button.dt-button {
     background: transparent;
     border: none;
-/*    color: #43648c;*/
+    /*    color: #43648c;*/
     font-size: 15px;
-/*    padding: 25px 10px 5px 10px;*/
+    /*    padding: 25px 10px 5px 10px;*/
     padding-left: 25px;
     margin: 0;
     font-weight: 700;
-/*    border-left: 1px solid #99aec7;*/
+    /*    border-left: 1px solid #99aec7;*/
+}
+
+#dataTableDiv button.dt-button:hover, #dataTableDiv button.dt-button:active, #dataTableDiv button.dt-button:focus {
+    box-shadow: none;
+    opacity: 0.8;
+    color: #43648c;
 }
 
 #dataTableDiv button.dt-button:before {
     font-family: "Font Awesome 5 Free";
     font-style: normal;
-/*    font-weight: normal;*/
+    /*    font-weight: normal;*/
     text-decoration: inherit;
     color: #6582a4;
     font-size: 18px;
     position: absolute;
     left: 0;
-/*
+    /*
     left: 50%;
     margin-left: -5px;
 */
@@ -917,15 +1056,37 @@ border: 1px solid #ccc !important;
 }
 
 
+.page-template table.dataTable tfoot th,
+table.dataTable tfoot td {
+    border-top: 1px solid #ddd;
+}
 
-.list-page .list-filter input[type="text"], .list-page .list-filter input[type="email"], .list-page .list-filter input[type="url"], .list-page .list-filter input[type="password"], .list-page .list-filter input[type="search"], .list-page .list-filter input[type="number"], .list-page .list-filter input[type="tel"], .list-page .list-filter input[type="range"], .list-page .list-filter input[type="date"], .list-page .list-filter input[type="month"], .list-page .list-filter input[type="week"], .list-page .list-filter input[type="time"], .list-page .list-filter input[type="datetime"], .list-page .list-filter input[type="datetime-local"], .list-page .list-filter input[type="color"], .list-page .list-filter textarea, .list-page .list-filter .select2-container--default .select2-selection--single {
+
+
+.list-page .list-filter input[type="text"],
+.list-page .list-filter input[type="email"],
+.list-page .list-filter input[type="url"],
+.list-page .list-filter input[type="password"],
+.list-page .list-filter input[type="search"],
+.list-page .list-filter input[type="number"],
+.list-page .list-filter input[type="tel"],
+.list-page .list-filter input[type="range"],
+.list-page .list-filter input[type="date"],
+.list-page .list-filter input[type="month"],
+.list-page .list-filter input[type="week"],
+.list-page .list-filter input[type="time"],
+.list-page .list-filter input[type="datetime"],
+.list-page .list-filter input[type="datetime-local"],
+.list-page .list-filter input[type="color"],
+.list-page .list-filter textarea,
+.list-page .list-filter .select2-container--default .select2-selection--single {
     color: #666;
     border: 1px solid #ccc;
     border-radius: 20px;
     z-index: 1;
     padding: 5px 10px;
     margin: 0;
-        max-width: 97%;
+    max-width: 97%;
 }
 
 .list-page .list-filter .select2-container .select2-selection--single {
@@ -949,7 +1110,7 @@ border: 1px solid #ccc !important;
 .list-page .list-filter .form-group {
     position: relative;
     vertical-align: top;
-    margin-top: 40px;
+/*    margin-top: 40px;*/
     margin-bottom: 0px;
 }
 
@@ -1060,15 +1221,28 @@ ul.tabs-nav .tab-nav.active {
 
 
 /*
+# Session
+----------------------------------*/
+.add-btn {
+    position: absolute;
+    right: 15px;
+    margin-right: 0;
+    z-index: 1;
+}
+
+/*
 # Detail View
 ----------------------------------*/
+
 .detailed_view {
     padding-top: 60px;
     position: relative;
 }
 
 .page-template-template_detailed_view .map-toggle-btn {
-    top: 65px;
+    top: 100px;
+    /*    65px za bez navigacija*/
+    /*    top: 65px;*/
     color: #fff;
     font-weight: bold;
 }
@@ -1228,6 +1402,7 @@ ul.tabs-nav .tab-nav.active {
 /*
 # detailed view
 ----------------------------------*/
+
 #Additional-info .addeventatc {
     border: 0;
     border-radius: 20px;
@@ -1251,13 +1426,13 @@ ul.tabs-nav .tab-nav.active {
     display: inline-block;
     padding: 10px 20px 10px 30px;
     margin: 10px 0px;
-    font-size: 14px; 
+    font-size: 14px;
     width: 100%;
 }
 
 
 #Additional-info .addeventatc .addeventatc_icon {
-background: url("../images/icon-calendar-t1(white).svg") ;
+    background: url("../images/icon-calendar-t1(white).svg");
     top: 50%;
     left: 20px;
     margin-top: -10px;
@@ -2278,9 +2453,10 @@ background: url("../images/icon-calendar-t1(white).svg") ;
 /*--------------------------------------------------------------
 # Detail list
 --------------------------------------------------------------*/
+
 #main-info table td {
     padding: 15px 0;
-    vertical-align: top;    
+    vertical-align: top;
 }
 
 #main-info table td:first-child {
@@ -2293,48 +2469,48 @@ background: url("../images/icon-calendar-t1(white).svg") ;
 }
 
 #latest-action .progress .progress-bar:nth-child(1) {
-    background: rgba(2,41,88,0.1);
+    background: rgba(2, 41, 88, 0.1);
     color: #002a5c;
 }
 
 #latest-action .progress .progress-bar:nth-child(2) {
-    background: rgba(2,41,88,0.2);
-        color: #002a5c;
+    background: rgba(2, 41, 88, 0.2);
+    color: #002a5c;
 }
 
 #latest-action .progress .progress-bar:nth-child(3) {
-    background: rgba(2,41,88,0.3);
-     color: #002a5c;
+    background: rgba(2, 41, 88, 0.3);
+    color: #002a5c;
 }
 
 #latest-action .progress .progress-bar:nth-child(4) {
-    background: rgba(2,41,88,0.4);
-     color: #002a5c;
+    background: rgba(2, 41, 88, 0.4);
+    color: #002a5c;
 }
 
 #latest-action .progress .progress-bar:nth-child(5) {
-    background: rgba(2,41,88,0.5);
-     color: #002a5c;
+    background: rgba(2, 41, 88, 0.5);
+    color: #002a5c;
 }
 
 #latest-action .progress .progress-bar:nth-child(6) {
-    background: rgba(2,41,88,0.6);
+    background: rgba(2, 41, 88, 0.6);
 }
 
 #latest-action .progress .progress-bar:nth-child(7) {
-    background: rgba(2,41,88,0.7);
+    background: rgba(2, 41, 88, 0.7);
 }
 
 #latest-action .progress .progress-bar:nth-child(8) {
-    background: rgba(2,41,88,0.8);
+    background: rgba(2, 41, 88, 0.8);
 }
 
 #latest-action .progress .progress-bar:nth-child(9) {
-    background: rgba(2,41,88,0.9);
+    background: rgba(2, 41, 88, 0.9);
 }
 
 #latest-action .progress .progress-bar:nth-child(10) {
-    background: rgba(2,41,88,1);
+    background: rgba(2, 41, 88, 1);
 }
 
 
@@ -2354,7 +2530,7 @@ background: url("../images/icon-calendar-t1(white).svg") ;
 }
 
 .social i:hover {
-background: #6582a4;
+    background: #6582a4;
     color: #fff;
 }
 
@@ -2431,19 +2607,23 @@ background: #6582a4;
 #chartdiv {
     width: 100%;
     height: 100%;
+    max-height: -moz-calc(100% - 20px);
+    max-height: -webkit-calc(100% - 20px);
+    max-height: calc(100% - 20px);
 }
 
 /*tables filters*/
-.footerStyle{
+
+.footerStyle {
     display: table-row-group;
 }
 
 .federal-bills {
     position: absolute;
-    bottom: 100px;
+    bottom: 120px;
     right: 0px;
     z-index: 1;
-    padding: 0 15px 0 25px;
+    padding: 0 20px;
     border-color: transparent;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#91a8c4+0,002a5c+100 */
     background: rgb(145, 168, 196);
@@ -2458,6 +2638,43 @@ background: #6582a4;
     /* IE6-9 */
     color: #fff;
     border-radius: 50px;
+    transition: background ease-in-out 0.5s;
+}
+
+
+.federal-bills:hover {
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#04295d+0,04295d+100 */
+background: rgb(4,41,93); /* Old browsers */
+background: -moz-linear-gradient(left, rgba(0, 42, 92, 1) 0%, rgba(145, 168, 196, 1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, rgba(0, 42, 92, 1) 0%,rgba(145, 168, 196, 1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, rgba(0, 42, 92, 1) 0%,rgba(145, 168, 196, 1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#04295d', endColorstr='#04295d',GradientType=1 ); /* IE6-9 */
+    cursor: pointer;
+    filter: none;
+}
+
+
+
+.map-btn {
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
+    line-height: 130px;
+    text-align: center;
+    right: 20px;
+    /*    border: 1px solid #d8dee7;*/
+}
+
+
+
+
+.map-btn svg {
+    vertical-align: middle;
+}
+
+.map-icon {
+    fill: #fff;
+    vertical-align: middle;
 }
 
 .federal-bills button {
@@ -2466,7 +2683,8 @@ background: #6582a4;
     color: #fff;
     padding: 25px 25px 25px 10px;
     font-weight: bold;
-} 
+}
+
 .federal-bills img {
     vertical-align: middle;
 }
@@ -2475,8 +2693,7 @@ background: #6582a4;
 Notes
 --------------------------------------------------------------*/
 
-/
-.notes-page {
+/ .notes-page {
     padding: 60px 0;
 }
 
@@ -2493,7 +2710,8 @@ Notes
     color: #828282;
 }
 
-.notes a.button, .notes input[type=submit].button {
+.notes a.button,
+.notes input[type=submit].button {
     margin-top: 30px;
     display: inline-block;
     margin-right: 0;
@@ -2501,7 +2719,8 @@ Notes
     color: #fff;
 }
 
-.notes a.button:hover, .notes input[type=submit].button:hover {
+.notes a.button:hover,
+.notes input[type=submit].button:hover {
     color: #fff;
     cursor: pointer;
 }
@@ -2526,10 +2745,13 @@ Notes
 .opening-hours {
     margin-bottom: 40px;
 }
+
 /*--------------------------------------------------------------
 List Table
 --------------------------------------------------------------*/
-.fas-star-tooltiptext, .far-star-tooltiptext {
+
+.fas-star-tooltiptext,
+.far-star-tooltiptext {
     visibility: hidden;
     width: 120px;
     background-color: black;

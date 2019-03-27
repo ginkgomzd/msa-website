@@ -1,6 +1,8 @@
 <?php
 
 use Solarium\Client;
+use Solarium\Exception\HttpException;
+
 require_once 'DataImport.php';
 
 class Solr_Search_Connector {
@@ -52,6 +54,7 @@ class Solr_Search_Connector {
 	/**
 	 * Configures Solr endpoint for particular customer / staff
 	 * based on plugin settings
+	 *
 	 * @param $client_id
 	 *
 	 * @return array
@@ -76,6 +79,38 @@ class Solr_Search_Connector {
 		return $client_config;
 	}
 
+	/**
+	 *
+	 * @param null $client_id
+	 */
+	public function createCore($client_id = null){
+		$config = array(
+			'endpoint' => array(
+				'localhost' => array(
+					'host' => $this->server_host,
+					'port' => $this->server_port,
+					'path' => '/solr/',
+					'timeout'=> 30000
+				)
+			)
+		);
+		$this->client = new Client($config);
+		$coreAdminQuery = $this->client->createCoreAdmin()->setTimeAllowed(30000);
+		$createAction = $coreAdminQuery->createCreate();
+		$corename = $this->core_prefix . $client_id;
+		$createAction->setCore($corename);
+		$createAction->setShard("1");
+		$createAction->setConfigSet("template");
+		$coreAdminQuery->setAction($createAction);
+		try {
+			$result = $this->client->coreAdmin( $coreAdminQuery );
+			if ($result){
+				return true;
+			}
+		}catch ( HttpException $httpexec){
+			return false;
+		}
+	}
 
 	/**
 	 * @param null $client_id
@@ -92,7 +127,7 @@ class Solr_Search_Connector {
 			} else {
 				return false;
 			}
-		} catch ( \Exception $e ) {
+		} catch ( HttpException $e ) {
 			return false;
 		}
 	}
@@ -108,20 +143,59 @@ class Solr_Search_Connector {
 		$this->exclude_categories = ( '-pname:("' . implode( '" OR "', $user_categories ) . '")' );
 	}
 
-	public function reindexCore($core = null){
-		$this->client->registerQueryType(DataImport::QUERY_DATAIMPORT,new DataImport);
-		$query = $this->client->createQuery(DataImport::QUERY_DATAIMPORT);
-		$query->setClean(TRUE);
-		$query->setCommit(TRUE);
-		$query->setOptimize(TRUE);
-		$query->setCustomParameters(['core_client_id'=>3]);
-		$query->setCommand(DataImport::COMMAND_FULL_IMPORT);
-//$query->setEntity('msa_core_3');
-		$request = $this->client->createRequest($query);
-		$result = $this->client->executeRequest($request);
-		print_r($result);
+	/**
+	 *
+	 * @param null $core
+	 * @return bool
+	 */
+	public function reindexCore( $core = null ) {
+		$this->client->registerQueryType( DataImport::QUERY_DATAIMPORT, new DataImport );
+		$query = $this->client->createQuery( DataImport::QUERY_DATAIMPORT );
+		$query->setTimeAllowed(30000);
+		$query->setClean( true );
+		$query->setCommit( true );
+		$query->setOptimize( true );
+		$query->setCustomParameters( [ 'core_client_id' => $core ] );
+		$query->setCommand( DataImport::COMMAND_FULL_IMPORT );
+		$request = $this->client->createRequest( $query );
+		$result  = $this->client->executeRequest( $request );
+		$keepRequesting = true;
+		while($keepRequesting){
+			sleep(1);
+			$result = $this->client->executeRequest($request);
+			if(strpos($result->getBody(),'Indexing completed.') !== false){
+				$keepRequesting = false;
+			}
+		}
+		if($result->getStatusMessage() === 'OK'){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
+	/**
+	 * @param null $exclude_states
+	 *
+	 * @return mixed
+	 */
+	public function upcomingHearings($exclude_states = null){
+		$query = $this->client->createSelect();
+		$_query = 'entity_type:"hearing"';
+		if ( $this->exclude_categories !== null ) {
+			$_query .= ' AND ' . $this->exclude_categories;
+		}
+		if ( $exclude_states !== null ) {
+			$_query .= ' AND ' . ( '-state:("' . implode( '" OR "', $exclude_states ) . '")' );
+		}
+		$query->setQuery( $_query );
+		$query->setFields( [  'hearing_id' ] );
+
+
+		$query->createFilterQuery( 'date' )->setQuery( 'date:[NOW TO *]' );
+		$resultset = $this->client->execute( $query );
+		return $resultset->getNumFound();
+	}
 	/**
 	 * @param $document_type
 	 * @param null $category
@@ -132,7 +206,7 @@ class Solr_Search_Connector {
 	 *
 	 * @return mixed
 	 */
-	public function querySolr( $document_type, $category = null, $federal = '', $search = null, $current_page, $order = [] ) {
+	public function querySolr( $document_type, $category = null, $federal = '', $search = null, $current_page, $order = [], $status = null ,$length = 10,$exclude_states = null) {
 		$query = $this->client->createSelect();
 
 		$_query = 'entity_type:"' . $document_type . '" ';
@@ -143,6 +217,10 @@ class Solr_Search_Connector {
 		if ( $this->exclude_categories !== null ) {
 			$_query .= ' AND ' . $this->exclude_categories;
 		}
+		if ( $exclude_states !== null ) {
+			$_query .= ' AND ' . ( '-state:("' . implode( '" OR "', $exclude_states ) . '")' );
+		}
+
 		$query->setQuery( $_query );
 
 		$query->setFields( [ $document_type . '_id' ] );
@@ -150,16 +228,27 @@ class Solr_Search_Connector {
 		if ( $category !== null ) {
 			// create a filterquery
 			$category = ( '("' . implode( '" OR "', explode( ',', $category ) ) . '")' );
-			$query->createFilterQuery( 'pname' )->setQuery( $category );
+			$query->createFilterQuery( 'pname' )->setQuery( 'pname:' . $category );
 		}
+
 
 		if ( $federal !== '' ) {
 			$federal = ( '("' . implode( '" OR "', explode( ',', $federal ) ) . '")' );
 			$query->createFilterQuery( 'state' )->setQuery( 'state:' . $federal . '' );
 		}
 
+		if ( $status !== null ) {
+			/*
+			 *The brackets around a query determine its inclusiveness.
+			 *Square brackets [ & ] denote an inclusive range query that matches values including the upper and lower bound.
+			 *Curly brackets { & } denote an exclusive range query that matches values between the upper and lower bounds, but excluding the upper and lower bounds themselves.
+			 *You can mix these types so one end of the range is inclusive and the other is exclusive. Here’s an example: count:{1 TO 10]
+			 */
+			$status = ( '[' . implode( ' TO ', $status ) . '}' );
+			$query->createFilterQuery( 'status_standardkey' )->setQuery( 'status_standardkey:' . $status . '' );
+		}
 		//pagination and sorting
-		$query->setRows( 10 );
+		$query->setRows( $length );
 		$query->setStart( $current_page );
 
 		if ( empty( $order ) ) {
@@ -174,28 +263,28 @@ class Solr_Search_Connector {
 		}
 		//print_r($query);
 		$resultset = $this->client->execute( $query );
-
 		return $resultset;
 	}
 
-	public function queryAutocomplete($filter){
+	public function queryAutocomplete( $filter ) {
 		$query = $this->client->createSuggester();
-		$query->setQuery($filter);
-		$query->setDictionary('mySuggester');
-		$query->setBuild(true);
-		$query->setCount(10);
+		$query->setQuery( $filter );
+		$query->setDictionary( 'mySuggester' );
+		$query->setBuild( true );
+		$query->setCount( 10 );
 
 
-		$resultset = $this->client->suggester($query);
+		$resultset = $this->client->suggester( $query );
 
 		$data = [];
-		foreach ($resultset as $dictionary => $terms) {
-			foreach ($terms as $term => $termResult) {
-				foreach ($termResult as $result) {
+		foreach ( $resultset as $dictionary => $terms ) {
+			foreach ( $terms as $term => $termResult ) {
+				foreach ( $termResult as $result ) {
 					$data[] = $result['term'];
 				}
 			}
 		}
+
 		return $data;
 	}
 
@@ -237,9 +326,10 @@ class Solr_Search_Connector {
 		if ( $category !== null ) {
 			// create a filter query
 			$_category = ( '("' . implode( '" OR "', explode( ',', $category ) ) . '")' );
-			$query->createFilterQuery( 'pname' )->setQuery( $_category );
+			$query->createFilterQuery( 'pname' )->setQuery( 'pname:' . $_category );
 		}
-		//echo $status;
+
+
 		if ( $status !== null ) {
 			/*
 			 *The brackets around a query determine its inclusiveness.
@@ -247,8 +337,12 @@ class Solr_Search_Connector {
 			 *Curly brackets { & } denote an exclusive range query that matches values between the upper and lower bounds, but excluding the upper and lower bounds themselves.
 			 *You can mix these types so one end of the range is inclusive and the other is exclusive. Here’s an example: count:{1 TO 10]
 			 */
+
+			$url_status = $this->reverseCalculateStatus( $status );
 			$status = ( '[' . implode( ' TO ', $status ) . '}' );
 			$query->createFilterQuery( 'status_standardkey' )->setQuery( 'status_standardkey:' . $status . '' );
+		} else {
+			$url_status = null;
 		}
 
 		$query->setQuery( $_query );
@@ -267,7 +361,6 @@ class Solr_Search_Connector {
 		$query->setRows( 0 );
 
 		$resultset = $this->client->execute( $query );
-
 		$facetResult    = $resultset->getFacetSet()->getFacet( 'states' );
 		$_data          = [];
 		$_data['total'] = $resultset->getNumFound();
@@ -299,10 +392,11 @@ class Solr_Search_Connector {
 				$_resultdata[]            = $_tmparray;
 			}
 		} else {
+
 			foreach ( $facetResult as $state => $value ) {
 				if ( $value !== 0 ) {
 					$_tmparray['id']             = "US-" . $state;
-					$_tmparray['modalUrl']       = get_site_url() . '/legislation-list?document_type=' . $document_type . '&document_category=' . $category . '&document_state=' . $state;
+					$_tmparray['modalUrl']       = get_site_url() . '/legislation-list?document_type=' . $document_type . '&document_category=' . $category . '&document_state=' . $state . '&document_status=' . $url_status;
 					$_tmparray['selectable']     = true;
 					$_tmparray['value']          = $value;
 					$_tmparray[ $document_type ] = $value;
@@ -346,6 +440,35 @@ class Solr_Search_Connector {
 			return false;
 		}
 
+	}
+
+	/**
+	 *
+	 */
+	public function reverseCalculateStatus( $status ) {
+		if ( $status[0] >= 90000 && $status[1] <= 100000 ) {
+			$_clstatus = 10;
+		} elseif ( $status[0] >= 80000 && $status[1] <= 90000 ) {
+			$_clstatus = 9;
+		} elseif ( $status[0] >= 70000 && $status[1] <= 80000 ) {
+			$_clstatus = 8;
+		} elseif ( $status[0] >= 60000 && $status[1] <= 70000 ) {
+			$_clstatus = 7;
+		} elseif ( $status[0] >= 50000 && $status[1] <= 60000 ) {
+			$_clstatus = 6;
+		} elseif ( $status[0] >= 40000 && $status[1] <= 50000 ) {
+			$_clstatus = 5;
+		} elseif ( $status[0] >= 30000 && $status[1] <= 40000 ) {
+			$_clstatus = 4;
+		} elseif ( $status[0] >= 20000 && $status[1] <= 30000 ) {
+			$_clstatus = 3;
+		} elseif ( $status[0] >= 10000 && $status[1] <= 20000 ) {
+			$_clstatus = 2;
+		} elseif ( $status[0] >= 0 && $status[1] <= 10000 ) {
+			$_clstatus = 1;
+		}
+
+		return $_clstatus;
 	}
 
 	/*

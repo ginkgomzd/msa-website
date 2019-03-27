@@ -47,9 +47,11 @@ if ( ! is_user_logged_in() ) {
     }
 }
 ?>
-<div class="container-fluid">
-    <div class="col-md-6">
-        <form action="" method="POST">
+<div class="container">
+    <div class="row" style="display: block;">
+        <div class="col-md-10">
+        <h2 class="mt-5 mb-5">Edit session</h2>
+            <form action="" method="POST">
             <input type="text" hidden name="id" value="<?php echo esc_html($data->id); ?>">
             <div class="form-group row">
                 <label for="session_name" class="col-sm-2 col-form-label">Session Name</label>
@@ -141,6 +143,7 @@ if ( ! is_user_logged_in() ) {
                 </div>
             </div>
         </form>
+        </div>
     </div>
 </div>
 <script>

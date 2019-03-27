@@ -119,6 +119,20 @@ function mainstreet_advocates_widgets_init() {
 
 add_action( 'widgets_init', 'mainstreet_advocates_widgets_init' );
 
+// Function to change email address
+
+function wpb_sender_email( $original_email_address ) {
+	return 'kevin.canan@msa.com';
+}
+
+// Function to change sender name
+function wpb_sender_name( $original_email_from ) {
+	return 'Kevin Canan';
+}
+
+// Hooking up our functions to WordPress filters
+add_filter( 'wp_mail_from', 'wpb_sender_email' );
+add_filter( 'wp_mail_from_name', 'wpb_sender_name' );
 /**
  * Enqueue scripts and styles.
  */
@@ -163,6 +177,24 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+function modify_nav_menu_args( $args )
+{
+	$user = null;
+	if ( is_user_logged_in() ) {
+		$_user       = get_userdata( get_current_user_id() );
+		$_user_roles = $_user->roles;
+
+		if ( in_array( 'staff', $_user_roles, true ) || in_array('administrator',$_user_roles,true) ) {
+			$args['menu'] = 'Admin_Menu';
+		} else {
+			$args['menu'] = 'Clients';
+		}
+	}
+
+	return $args;
+}
+
+add_filter( 'wp_nav_menu_args', 'modify_nav_menu_args' );
 /**
  * Addding Custom style and javascripts dependencies
  */
@@ -174,7 +206,7 @@ function theme_styles() {
 	wp_enqueue_style( 'main_css', get_template_directory_uri() . '/css/style.css' );
 	wp_enqueue_style( 'datatables_css', get_template_directory_uri() . '/DataTables/datatables.min.css' );
 	wp_enqueue_style( 'select2', get_template_directory_uri() . '/css/select2.min.css' );
-	wp_enqueue_style( 'fancybox', '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css' );
+	//wp_enqueue_style( 'fancybox', '//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css' );
 	wp_enqueue_style( 'export', 'https://www.amcharts.com/lib/3/plugins/export/export.css' );
 }
 
@@ -189,7 +221,7 @@ function theme_js() {
 	wp_enqueue_script( 'select2', get_template_directory_uri() . '/js/select2.min.js', true );
 	wp_enqueue_script( 'datatable_js', get_template_directory_uri() . '/DataTables/datatables.min.js' );
 	wp_enqueue_script( 'amchart', get_template_directory_uri() . '/js/ammap.js', true );
-	wp_enqueue_script( 'fancybox', get_template_directory_uri() . '/js/jquery.fancybox.min.js', true );
+	//wp_enqueue_script( 'fancybox', get_template_directory_uri() . '/js/jquery.fancybox.min.js', true );
 	//wp_enqueue_script( 'usaLow', get_template_directory_uri() . '/js/usaLow.js' ,true);
 	wp_enqueue_script( 'light', get_template_directory_uri() . '/js/light.js', true );
 	wp_enqueue_script( 'export', get_template_directory_uri() . '/js/export.min.js', true );
@@ -514,7 +546,7 @@ function getCleint( $ent_id ) {
 // custom function  - returns related documents function
 function getRelatedBills( $ent_id ) {
 	global $wpdb;
-	$bill_query = "SELECT * FROM `related_bill` where legislation_id='$ent_id'";
+	$bill_query = "SELECT * FROM related_bill where legislation_id='$ent_id'";
 
 	$bills = $wpdb->get_results( $bill_query, OBJECT );
 
@@ -537,8 +569,13 @@ class MSABase {
 		$this->wpdb = $wpdb;
 	}
 
+
 	/**
-	 * base class for  dry
+	 * Finds all users that belong to particular client
+	 * @param $client_id
+	 * @param array $fields columns of object user which should be returned
+	 *
+	 * @return array @fields
 	 */
 	public function getClientUsers( $client_id, array $fields ) {
 		$users        = get_users( array(
@@ -560,20 +597,20 @@ class MSABase {
 	 * Returns list of admin or staff users
 	 * @return array (object)
 	 */
-	protected function getStaffUsers() {
+	public function getStaffUsers() {
 		$users = get_users( array(
-			'role__in' => array( 'Administrator', 'Staff' )
+			'role__in' => array(  'Staff' )
 		) );
 
 		return $users;
 	}
 
-	/**
-	 * check if user has setting for seeing bill : state, category
-	 *
-	 */
-	protected function validateBillForUser( $user, $bill ) {
-
+	public function checkSolr() {
+		if ( has_filter( 'solr_get_core' ) ) {
+			if ( apply_filters( 'solr_get_core', $this->client_id ) ) {
+				$this->solr_active = true;
+			}
+		}
 	}
 }
 
@@ -611,11 +648,22 @@ class MSABill extends MSABase {
 				$this->$key = $value;
 			}
 		}
+		$this->getBillCategories();
+
 		if ( $entity_type == MSABase::LEGISLATION ) {
-			$this->getBillCategories();
+			//$this->getBillCategories();
 			$this->getRelatedBills();
 			$this->calculateStatus();
 		}
+		if($entity_type == MSABase::HEARING){
+			$this->getLegislationForHearing();
+		}
+	}
+
+	public function getLegislationForHearing(){
+		$this->hearing_legislation = $this->wpdb->get_row($this->wpdb->prepare("
+	                                   SELECT * FROM legislation WHERE external_id = %s
+	    ",$this->legislation_external_id),OBJECT);
 	}
 
 	public function getHearingForLegislation() {
@@ -677,9 +725,9 @@ class MSABill extends MSABase {
 	 */
 	public function getRelatedBills() {
 		$this->related_bills = $this->wpdb->get_results( $this->wpdb->prepare(
-			"SELECT * FROM related_bill
+			"SELECT DISTINCT(id) ,url,type,number FROM related_bill
                     WHERE legislation_id = %s",
-			$this->id ),
+             $this->id ),
 			OBJECT );
 	}
 
@@ -702,7 +750,7 @@ class MSABill extends MSABase {
 
 	public function getLatestUpdated() {
 		$result = $this->wpdb->get_row( $this->wpdb->prepare(
-			"SELECT MAX(curation_date) as last_update FROM unit_tests.last_updated AS lu
+			"SELECT MAX(curation_date) as last_update FROM last_updated AS lu
                     LEFT JOIN import_table AS it ON lu.import_table_id = it.id
                     WHERE document_id = %s 
                     AND entity_type = %s
@@ -832,6 +880,7 @@ class MSABill extends MSABase {
 	 * @return void
 	 */
 	public function getBillCategories() {
+		//echo $this->client_id;
 		if ( is_null( $this->client_id ) ) {
 			$categories = $this->wpdb->get_results( $this->wpdb->prepare(
 				"SELECT id,pname
@@ -855,6 +904,7 @@ class MSABill extends MSABase {
 				$this->client_id ),
 				OBJECT );
 		}
+
 		foreach ( $categories as $category ) {
 			if ( in_array( $category->pname, $this->categories ) === false ) {
 				$this->categories[] = $category->pname;
@@ -930,8 +980,10 @@ class MSANotes extends MSABase {
 
 		$headers = array( 'Content-Type: text/html; charset=UTF-8', 'From: MainStreetAdvocates <info@msa.com>' );
 		$subject = "New Note added on System " . date( "Y/m/d" );
-		//TODO get list of recepients that is all of staff members - use getstaffmembers,iterate and compare if user that is here in list skip it in that case
-		$sent_message = wp_mail( "ljubisa.dobric@live.com", $subject, $body, $headers );
+		$staff_users = $this->getStaffUsers();
+		foreach ( $staff_users as $staff_user ) {
+			wp_mail( $staff_user->user_email, $subject, $body, $headers );
+		}
 	}
 
 	public function delete() {
@@ -1007,34 +1059,269 @@ class MSAClient extends MSABase {
 
 	}
 
-	protected function checkSolr() {
-		if ( has_filter( 'solr_get_core' ) ) {
-			if ( apply_filters( 'solr_get_core', $this->client_id ) ) {
-				$this->solr_active = true;
-			}
-		}
-	}
+
 }
 
 class MSAUser extends MSAClient {
+
 	public $user_states = array();
+
 	public $user_categories = array();
+
 	public $user_keywords = array();
 
+	public $user_email;
 	// We should handle if user is "user" or staff
 
 	public function __construct( $user_id = null ) {
 		parent::__construct();
 		$this->user_id   = ( is_null( $user_id ) ) ? get_current_user_id() : $user_id;
 		$this->client_id = get_user_meta( $this->user_id, 'company', true );
+
 		//  we will initialize settings as they are mandatory for most of actions
 		$this->getUserSettings();
 		$this->checkSolr();
+		$this->getClientName();
+		$this->getUserInformation();
+	}
+
+	private function getUserInformation(){
+		$user_data = get_userdata($this->user_id);
+
+		$this->user_email = $user_data->user_email;
+	}
+
+	private function getClientName(){
+		$this->client = $this->wpdb->get_var($this->wpdb->prepare("SELECT client FROM user_clients WHERE id = %d",$this->client_id));
+	}
+
+	public function validateExistingBillForUser($bill,$type){
+		if ( isset($this->user_states[$bill->state]) && $this->user_states[ $bill->state ][$type] === '0') {
+		    return null;
+		}
+
+		foreach ($bill->categories as $category){
+			if(isset($this->user_categories[$category]) && $this->user_categories[$category][$type] === '0'){
+				return null;
+			}
+		}
+
+		$bill->getNotesForBill();
+		return $bill;
+		//$bill->getHiddenStatus();
+		/*if(!$bill->hidden){
+			$bill->getBillCategories();
+			$bill->getNotesForBill();
+			$bill->getPrioritzed();
+			return $bill;
+		}else{
+			return null;
+		}*/
+	}
+
+	/**
+	 * check if user has setting for seeing bill : state, category
+	 *
+	 */
+	public function validateBillForUser( $bill_id,$type ) {
+		$_bill = $this->getBill($type,$bill_id);
+		// get bill and check if country exist for user that that isfrontactive = 1
+		if(!$_bill){
+			return null;
+		}
+		if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['ismailactive'] === '0' ) {
+			return null;
+		}
+		foreach ($_bill->categories as $category){
+			if(isset($this->user_categories[$category]) && $this->user_categories[$category]['ismailactive'] === '0'){
+				return null;
+			}
+		}
+
+		$_bill->getHiddenStatus();
+		if(!$_bill->hidden){
+			$_bill->getBillCategories();
+			return $_bill;
+		}else{
+			return null;
+		}
+	}
+	public function group_by( $array, $key, $arr_push = false, $field ) {
+		$return = array();
+		foreach ( $array as $val ) {
+			if ( $arr_push ) {
+				if ( ! key_exists( $val[ $key ], $return ) ) {
+					$return[ $val[ $key ] ] = [];
+				}
+				array_push( $return[ $val[ $key ] ], $val[ $field ] );
+			} else {
+				$return[ $val[ $key ] ][] = $val;
+			}
+		}
+
+		return $return;
+	}
+
+	public function getImportBills( $data ): Array {
+		$import_ids = implode( ',', $data );
+		$result     = $this->wpdb->get_col( $this->wpdb->prepare( "SELECT DISTINCT(document_id) FROM last_updated
+									WHERE import_table_id IN (%s)", $import_ids ) );
+
+		return $result;
+	}
+
+	public function getClientLegislation() {
+		$this->clientlegislation = [];
+		$this->all_legislation = $this->wpdb->get_results( "SELECT leg.id FROM legislation AS leg
+        LEFT JOIN session_info ON leg.session_id = session_info.id
+        LEFT JOIN hidden_bills as hb ON leg.id = hb.bill_id AND entity_type = 'legislation' AND client_id = {$this->client_id}
+        WHERE leg.id IN (SELECT DISTINCT(entity_id) as id FROM user_settings as cs
+        INNER JOIN profile_match as pm ON cs.category=pm.pname AND pm.client_id = {$this->client_id}
+        WHERE cs.user_id = {$this->user_id} AND type = 'category' AND isfrontactive = 1 and entity_type = 'legislation') AND is_active = 1 AND hidden_timestamp IS NULL;" );
+
+		if ( isset( $this->all_legislation ) ) {
+			foreach ( $this->all_legislation as $leg ) {
+				$_bill = $this->getBill( 'legislation', $leg->id );
+				if ( $_bill !== null ) {
+					array_push( $this->clientlegislation, $_bill );
+				}
+			}
+		}
+		$this->user_bills = [];
+		foreach ( $this->clientlegislation as $legislation ) {
+			if ( $legislation !== null ) {
+				$bill = $this->validateExistingBillForUser( $legislation ,'isfrontactive');
+				if ( $bill !== null ) {
+					array_push( $this->user_bills, $bill );
+				}
+			}
+		}
+		return $this->user_bills;
+	}
+    // TODO optimize this two functions
+	public function getClientLastUpdateLegislation(){
+		$clientlegislation = [];
+		$this->last_legislation_import = $this->wpdb->get_row( "SELECT MAX(fetching_date),id FROM import_table as imt WHERE imt.client_id = {$this->client_id} AND entity_type = 'legislation'",OBJECT);
+		$this->all_legislation_lastest = $this->wpdb->get_results( "SELECT * FROM last_updated WHERE import_table_id = {$this->last_legislation_import->id}",OBJECT);
+		if ( isset( $this->all_legislation_lastest ) ) {
+			foreach ( $this->all_legislation_lastest as $leg ) {
+				$_bill = $this->getBill( 'regulation', $leg->id );
+				if ( $_bill !== null ) {
+					array_push( $clientlegislation, $_bill );
+				}
+			}
+		}
+		$user_leg = [];
+
+		foreach ( $clientlegislation as $legislation ) {
+			$bill = $this->validateExistingBillForUser( $legislation,'isfrontactive' );
+			if ( $bill !== null ) {
+				array_push( $user_leg, $bill );
+			}
+		}
+		return $user_leg;
+	}
+
+    public function getClientLastUpdateRegulation(){
+	    $clientregulation = [];
+	    $this->last_regulation_import = $this->wpdb->get_row( "SELECT MAX(fetching_date),id FROM import_table as imt WHERE imt.client_id = {$this->client_id} AND entity_type = 'regulation'",OBJECT);
+        $this->all_regulation_lastest = $this->wpdb->get_results( "SELECT * FROM last_updated WHERE import_table_id = {$this->last_regulation_import ->id}",OBJECT);
+	    if ( isset( $this->all_regulation_lastest ) ) {
+		    foreach ( $this->all_regulation_lastest as $reg ) {
+			    $_bill = $this->getBill( 'regulation', $reg->id );
+			    if ( $_bill !== null ) {
+				    array_push( $clientregulation, $_bill );
+			    }
+		    }
+	    }
+	    $user_reg = [];
+
+	    foreach ( $clientregulation as $regulation ) {
+		    $bill = $this->validateExistingBillForUser( $regulation,'isfrontactive' );
+		    if ( $bill !== null ) {
+			    array_push( $user_reg, $bill );
+		    }
+	    }
+	    return $user_reg;
+    }
+
+	public function getClientRegulation() {
+		$this->clientregulation = [];
+		$this->all_regulation = $this->wpdb->get_results( "SELECT DISTINCT(regulation.id)  FROM regulation
+                 LEFT JOIN hidden_bills as hb ON regulation.id = hb.bill_id AND hb.entity_type = 'regulation' AND hb.client_id = {$this->client_id}
+                 WHERE regulation.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs
+                 INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id
+                 WHERE cs.client_id = {$this->client_id} AND type = 'category' AND isfrontactive = 1 and entity_type = 'regulation') AND hidden_timestamp IS NULL;" );
+		if ( isset( $this->all_regulation ) ) {
+			foreach ( $this->all_regulation as $reg ) {
+				$_bill = $this->getBill( 'regulation', $reg->id );
+				if ( $_bill !== null ) {
+					array_push( $this->clientregulation, $_bill );
+				}
+			}
+		}
+		$this->user_regulation = [];
+
+		foreach ( $this->clientregulation as $regulation ) {
+				$bill = $this->validateExistingBillForUser( $regulation,'isfrontactive' );
+				if ( $bill !== null ) {
+					array_push( $this->user_regulation, $bill );
+				}
+		}
+		return $this->user_regulation;
+	}
+
+
+
+	public function getImportsLastWeek() {
+		$imports = $this->wpdb->get_results( "SELECT DISTINCT(import_id),entity_type FROM import_daily_mails as idm
+                                                    LEFT JOIN import_table ON idm.import_id = import_table.id
+                                                    WHERE idm.client_id = {$this->client_id} and YEARWEEK(daily_mail_sent_time, 1) = YEARWEEK(CURDATE(), 1) AND entity_type <> 'hearing';", ARRAY_A );
+
+		$this->last_week_imports = $this->group_by( $imports, 'entity_type', true, 'import_id' );
+		$leg_counter = 0;
+		$reg_counter = 0;
+		foreach ( $this->last_week_imports as $category => $ids ) {
+			$ids = $this->getImportBills( $ids );
+			foreach ( $ids as $bill_id ) {
+				$_bill = $this->getBill( $category, $bill_id );
+				if ( $_bill !== null ) {
+					$bill = $this->validateExistingBillForUser( $_bill,'isfrontactive' );
+					if ( $bill !== null ) {
+						if ( $category === 'legislation' ) {
+							$leg_counter ++;
+						} else {
+							$reg_counter ++;
+						}
+					}
+				}
+			}
+		}
+
+		return ['leg_counter' => $leg_counter, 'reg_counter' => $reg_counter];
 
 	}
 
 	/**
-     * Iterates user categories states and keywords and updates user settings
+     * Get last import for particular client (user) grouped by bill type
+	 * @return array|null
+	 */
+	public function getLastImportTimestamps(){
+	    $_result = $this->wpdb->get_results($this->wpdb->prepare("SELECT MAX(curation_date) as curation_date,entity_type FROM import_table WHERE client_id = %d GROUP BY entity_type",$this->client_id),OBJECT);
+	    if ($_result) {
+	        $lastimports = [];
+	        foreach ($_result as $res){
+                $lastimports[$res->entity_type] = $res->curation_date;
+            }
+	        return $lastimports;
+	    }else{
+		    return null;
+        }
+
+    }
+
+	/**
+	 * Iterates user categories states and keywords and updates user settings
 	 * @param bool $return_object_settings
 	 *
 	 * @return array|object|null
@@ -1076,7 +1363,8 @@ class MSAUser extends MSAClient {
 		$solr_result = apply_filters( 'solr_reindex_core', 3 );
 
 		return $solr_result;
-    }
+	}
+
 
 	/**
 	 * @param $filter
@@ -1086,6 +1374,23 @@ class MSAUser extends MSAClient {
 	public function typeheadSuggestion($filter){
 		$solr_result = apply_filters( 'solr_typehead_suggestion', $filter );
 
+		return $solr_result;
+	}
+
+	public function getCountUpcomingHearings(){
+		$exclude_list = [];
+		foreach ( $this->user_categories as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_list, $user_category );
+			}
+		}
+		$exclude_states = [];
+		foreach ( $this->user_states as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_states, $user_category );
+			}
+		}
+		$solr_result = apply_filters( 'solr_get_upcoming_hearings', $exclude_list,$exclude_states);
 		return $solr_result;
     }
 
@@ -1098,72 +1403,72 @@ class MSAUser extends MSAClient {
 	 * @return bool
 	 */
 	public function updateBillPriority($bill_id,$entity_type,$status,$client_id = null){
-	    if($status === 'enable'){
-		    $result = $this->wpdb->insert( 'prioritized_bills', array( 'bill_id'     => $bill_id,
-		                                                         'user_id'     => $this->user_id,
-		                                                         'entity_type' => $entity_type,
-		                                                         'client_id'   => $this->client_id
-		    ) );
-		    if($this->solr_active) {
-			    $solr_result = apply_filters( 'solr_update_document_priority', $entity_type, $bill_id, true);
-		    }
-        }else{
-		    $result = $this->wpdb->delete( 'prioritized_bills', array( 'bill_id'     => $bill_id,
-		                                                         'entity_type' => $entity_type,
-		                                                         'client_id'   => $this->client_id
-		    ) );
-		    if($this->solr_active) {
-			    $solr_result = apply_filters( 'solr_update_document_priority', $entity_type, $bill_id, false);
-		    }
-        }
-        if($result){
-            return True;
-        }else{
-            return False;
-        }
-    }
+		if($status === 'enable'){
+			$result = $this->wpdb->insert( 'prioritized_bills', array( 'bill_id'     => $bill_id,
+			                                                           'user_id'     => $this->user_id,
+			                                                           'entity_type' => $entity_type,
+			                                                           'client_id'   => $this->client_id
+			) );
+			if($this->solr_active) {
+				$solr_result = apply_filters( 'solr_update_document_priority', $entity_type, $bill_id, true);
+			}
+		}else{
+			$result = $this->wpdb->delete( 'prioritized_bills', array( 'bill_id'     => $bill_id,
+			                                                           'entity_type' => $entity_type,
+			                                                           'client_id'   => $this->client_id
+			) );
+			if($this->solr_active) {
+				$solr_result = apply_filters( 'solr_update_document_priority', $entity_type, $bill_id, false);
+			}
+		}
+		if($result){
+			return True;
+		}else{
+			return False;
+		}
+	}
 	/**
 	 *
 	 */
 	public function reverseCalculateStatus($key){
 		$key = (int)$key;
 		$status = [];
-        switch ($key){
-            case 1:
-                $status = [0,10000];
-                break;
-            case 2:
-                $status = [10000,20000];
-                break;
-            case 3:
-                $status = [20000,30000];
-                break;
-            case 4:
-                $status = [30000,40000];
-                break;
-            case 5:
-                $status = [40000,50000];
-                break;
-            case 6:
-                $status = [50000,60000];
-                break;
-            case 7:
-                $status = [60000,70000];
-                break;
-            case 8:
-                $status = [70000,80000];
-                break;
-            case 9:
-                $status = [80000,90000];
-                break;
-            case 10:
-                $status = [90000,100000];
-                break;
-            default:
-                $status = [0,100000];
-                break;
-        }
-        return $status;
+		switch ($key){
+			case 1:
+				$status = [0,10000];
+				break;
+			case 2:
+				$status = [10000,20000];
+				break;
+			case 3:
+				$status = [20000,30000];
+				break;
+			case 4:
+				$status = [30000,40000];
+				break;
+			case 5:
+				$status = [40000,50000];
+				break;
+			case 6:
+				$status = [50000,60000];
+				break;
+			case 7:
+				$status = [60000,70000];
+				break;
+			case 8:
+				$status = [70000,80000];
+				break;
+			case 9:
+				$status = [80000,90000];
+				break;
+			case 10:
+				$status = [90000,100000];
+				break;
+			default:
+				$status = [0,100000];
+				break;
+		}
+		return $status;
 	}
 	public function getActiveUserStats() {
 		$_out = [];
@@ -1203,7 +1508,6 @@ class MSAUser extends MSAClient {
 		$useroutput = [];
 		foreach ( $output as $item ) {
 			if ( ! isset( $item->isPriority ) ) {
-				//echo $item->priority;
 				if ( $item->priority !== null ) {
 					$item->isPriority = true;
 				} else {
@@ -1233,7 +1537,7 @@ class MSAUser extends MSAClient {
 		return $useroutput;
 	}
 
-	public function getLegislationsSolr( $category = null, $federal = '', $search = null, $draw, $start, $request ) {
+	public function getLegislationsSolr( $category = null, $federal = '', $search = null, $draw, $start, $request,$document_status = null) {
 		$columns      = [
 			0  => 'legislation_id',
 			3  => 'state',
@@ -1257,14 +1561,27 @@ class MSAUser extends MSAClient {
 				array_push( $exclude_list, $user_category );
 			}
 		}
-		$solr_result = apply_filters( 'solr_get_legislations', $category, $federal, $exclude_list, $search, $start, $order );
+		$exclude_states = [];
+		foreach ( $this->user_states as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_states, $user_category );
+			}
+		}
+
+		if($document_status !== null){
+			$document_status = $this->reverseCalculateStatus($document_status);
+		}else{
+			$document_status = null;
+		}
+		$length =  $request['length'];
+		$solr_result = apply_filters( 'solr_get_legislations', $category, $federal, $exclude_list, $search, $start, $order,$document_status, $length,$exclude_states);
 		$list        = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 		if ( $list !== '' ) {
 			$_result = $this->wpdb->get_results(
 				"SELECT leg.id as legislation_id,number,session,state,status_val,status_standard_val,type,title,abstract,sponsor_name,sponsor_url,
                 COUNT(DISTINCT bn.bill_id) as bookmark_note,GROUP_CONCAT(DISTINCT pm.pname) as categories,
                 (SELECT id FROM prioritized_bills WHERE client_id={$this->client_id} and entity_type = 'legislation' and bill_id = leg.id) as priority,
-                (SELECT MAX(fetching_date) FROM unit_tests.last_updated AS lu LEFT JOIN import_table AS it ON lu.import_table_id = it.id WHERE document_id = leg.id and client_id = {$this->client_id} and entity_type = 'legislation') as last_updated
+                (SELECT MAX(fetching_date) FROM last_updated AS lu LEFT JOIN import_table AS it ON lu.import_table_id = it.id WHERE document_id = leg.id and client_id = {$this->client_id} and entity_type = 'legislation') as last_updated
                 FROM legislation AS leg 
 				LEFT JOIN bill_notes AS bn ON leg.id= bn.bill_id and entity_type = 'legislation' and bn.client_id = {$this->client_id}
 				LEFT JOIN profile_match AS pm ON leg.id = pm.entity_id  and pm.entity_type = 'legislation' and pm.client_id = {$this->client_id}
@@ -1280,7 +1597,7 @@ class MSAUser extends MSAClient {
 		return $this->generateDataTableResult( $solr_result->getNumFound(), $data, $draw );
 	}
 
-	public function getLegislations( $category = null, $federal = '' ) {
+	public function getLegislations( $category = null, $federal = '',$draw, $start,$request ) {
 		// validate input request for profile matches compare
 		if ( $category !== null ) {
 			$_result = $this->wpdb->get_results( $this->wpdb->prepare(
@@ -1319,7 +1636,6 @@ class MSAUser extends MSAClient {
 		$output = [];
 		foreach ( $lista as $key => $value ) {
 			// lets get bill and then further validate
-			//echo "TREBA : " . $key;
 			$_bill = $this->getBill( MSABase::LEGISLATION, $key );
 			// validate federal input information and filter bills on that
 			if ( $federal === 'state' ) {
@@ -1332,7 +1648,7 @@ class MSAUser extends MSAClient {
 				}
 			}
 			// get bill and check if country exist for user that that isfrontactive = 1
-			if ( in_array( $_bill->state, $this->user_states ) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
+			if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
 				break;
 			}
 
@@ -1408,17 +1724,25 @@ class MSAUser extends MSAClient {
 			'order_by' => $columns[ $request['order'][0]['column'] ],
 			'order'    => $request['order'][0]['dir']
 		];
+
 		$exclude_list = [];
 		foreach ( $this->user_categories as $user_category => $status ) {
 			if ( $status['isfrontactive'] === '0' ) {
 				array_push( $exclude_list, $user_category );
 			}
 		}
-		$solr_result = apply_filters( 'solr_get_hearings', $category, $federal, $exclude_list, $search, $start, $order );
+		$exclude_states = [];
+		foreach ( $this->user_states as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_states, $user_category );
+			}
+		}
+		$length =  $request['length'];
+		$solr_result = apply_filters( 'solr_get_hearings', $category, $federal, $exclude_list, $search, $start, $order,$length,$exclude_states);
 		$list = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 		if ( $list !== '' ) {
 			$_result = $this->wpdb->get_results(
-				"SELECT her.id as hearing_id,date,time,house,committee,place,COUNT(DISTINCT bn.bill_id) as bookmark_note,(SELECT id FROM prioritized_bills WHERE entity_type = 'hearings' and bill_id = her.id and client_id = {$this->client_id}) as priority FROM hearing AS her 
+				"SELECT her.id as hearing_id,date,time,house,committee,place,COUNT(DISTINCT bn.bill_id) as bookmark_note,(SELECT id FROM prioritized_bills WHERE entity_type = 'hearing' and bill_id = her.id and client_id = {$this->client_id}) as priority FROM hearing AS her 
                 LEFT JOIN bill_notes AS bn ON her.id= bn.bill_id and entity_type = 'hearing' and bn.client_id = {$this->client_id}
                 WHERE her.id IN ({$list}) 
                 GROUP BY her.id;", OBJECT );
@@ -1521,7 +1845,7 @@ class MSAUser extends MSAClient {
 			//handling solr result
 			if ( ! isset( $item->isPriority ) ) {
 				if ( $item->priority !== null && $item->priority != 0) {
-					    $item->isPriority = true;
+					$item->isPriority = true;
 				} else {
 					$item->isPriority = false;
 				};
@@ -1560,7 +1884,14 @@ class MSAUser extends MSAClient {
 				array_push( $exclude_list, $user_category );
 			}
 		}
-		$solr_result = apply_filters( 'solr_get_regulations', $category, $federal, $exclude_list, $search, $start, $order );
+		$exclude_states = [];
+		foreach ( $this->user_states as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_states, $user_category );
+			}
+		}
+		$length =  $request['length'];
+		$solr_result = apply_filters( 'solr_get_regulations', $category, $federal, $exclude_list, $search, $start, $order,$length,$exclude_states);
 		$list        = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 		if ( $list !== '' ) {
 			$_result = $this->wpdb->get_results(
@@ -1637,7 +1968,7 @@ class MSAUser extends MSAClient {
 				}
 			}
 			// get bill and check if country exist for user that that isfrontactive = 1
-			if ( in_array( $_bill->state, $this->user_states ) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
+			if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
 				break;
 			}
 
@@ -1683,27 +2014,27 @@ class MSAUser extends MSAClient {
 				array_push( $exclude_states, $user_category );
 			}
 		}
-        //echo $document_status;
-        if($document_status !== null && $document_type === MSABase::LEGISLATION){
-	        $document_status = $this->reverseCalculateStatus($document_status);
-        }else{
-            $document_status = null;
-        }
+		//echo $document_status;
+		if($document_status !== null && $document_type === MSABase::LEGISLATION){
+			$document_status = $this->reverseCalculateStatus($document_status);
+		}else{
+			$document_status = null;
+		}
 
 		$solr_result = apply_filters( 'solr_get_dashboard_main',$document_type,$category,$document_status,$priority,$exclude_categories,$exclude_states);
 		return $solr_result;
-    }
+	}
 
-    public function dashboardManagerSolr($category,$type,$state,$priority,$status){
-	    $exclude_list = [];
-	    foreach ( $this->user_categories as $user_category => $status ) {
-		    if ( $status['isfrontactive'] === '0' ) {
-			    array_push( $exclude_list, $user_category );
-		    }
-	    }
-	    $solr_result = apply_filters( 'solr_get_dashboard', $type, $category, $state, $exclude_list,$status,$priority);
-        return $solr_result;
-    }
+	public function dashboardManagerSolr($category,$type,$state,$priority,$status){
+		$exclude_list = [];
+		foreach ( $this->user_categories as $user_category => $status ) {
+			if ( $status['isfrontactive'] === '0' ) {
+				array_push( $exclude_list, $user_category );
+			}
+		}
+		$solr_result = apply_filters( 'solr_get_dashboard', $type, $category, $state, $exclude_list,$status,$priority);
+		return $solr_result;
+	}
 
 	public function dashboardManager( $category, $type = 'legislation', $state = 'state', $priority = null, $status = null ) {
 		$json          = file_get_contents( get_template_directory_uri() . '/states.json' );
@@ -1776,7 +2107,7 @@ class MSAUser extends MSAClient {
 					}
 				}
 				// get bill and check if country exist for user that that isfrontactive = 1
-				if ( in_array( $_bill->state, $this->user_states ) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
+				if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
 					break;
 				}
 
@@ -1809,7 +2140,6 @@ class MSAUser extends MSAClient {
 					}
 				}
 				//check priority if 1 (true) or 0 (false)
-				//echo "DA" . $priority;
 				//echo $priority;
 				if ( $priority !== null ) {
 					if ( $priority === '0' && $_bill->priority ) {
@@ -1894,7 +2224,7 @@ class MSAUser extends MSAClient {
 				break;
 			}
 			// get bill and check if country exist for user that that isfrontactive = 1
-			if ( in_array( $_bill->state, $this->user_states ) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
+			if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
 				break;
 			}
 			// show only non hidden client bills
@@ -1931,7 +2261,6 @@ class MSAUser extends MSAClient {
 		$output = [];
 		foreach ( $lista as $key => $value ) {
 			// lets get bill and then further validate
-			//echo "TREBA : " . $key;
 			$_bill = $this->getBill( MSABase::LEGISLATION, $key );
 			// validate federal input information and filter bills on that
 
@@ -1940,7 +2269,7 @@ class MSAUser extends MSAClient {
 			}
 
 			// get bill and check if country exist for user that that isfrontactive = 1
-			if ( in_array( $_bill->state, $this->user_states ) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
+			if ( isset($this->user_states[$_bill->state]) && $this->user_states[ $_bill->state ]['isfrontactive'] === '0' ) {
 				break;
 			}
 
@@ -2043,8 +2372,8 @@ class MSAUser extends MSAClient {
 				break;
 		}
 		if($client_id === null){
-		    $client_id = $this->client_id;
-        }
+			$client_id = $this->client_id;
+		}
 		$fields = [
 			'client_id'      => $client_id,
 			'user_id'        => $this->user_id,
@@ -2060,6 +2389,27 @@ class MSAUser extends MSAClient {
 		return $_note;
 	}
 
+	public function generatePrioritizeBillLink($type,$bill_id){
+	    $url = get_site_url();
+	    switch ($type){
+            case 'legislation':
+                $url .= '/detailed-view/?id=';
+                break;
+            case 'hearing':
+                $url .= '/hearing-detailed-view/?id=';
+                break;
+            case 'regulation':
+                $url .='/regulation-detail-view/?id=';
+                break;
+        }
+        $url .= $bill_id;
+	    return $url;
+
+    }
+	/*
+	 * Get list of prioritized documents for client to which user belongs
+	 * @return array
+	 */
 	public function getPrioritizedBillsList() {
 		$_result = $this->wpdb->get_results( $this->wpdb->prepare( "SELECT * FROM prioritized_bills_view 
                                                                           WHERE client_id = %s",
@@ -2089,7 +2439,6 @@ class MSAUser extends MSAClient {
 			OBJECT );
 		if ( $row !== null ) {
 			$new_bill = new MSABill( $entity_type, $row, $this->client_id );
-
 			return $new_bill;
 		} else {
 			return null;
@@ -2117,9 +2466,10 @@ class MSAUser extends MSAClient {
 
 	public function getRegulationBillDetail( $bill_id ) {
 		$_bill = $this->getBill( MSABase::REGULATION, $bill_id );
-		$_bill->getPrioritzed();
-		$_bill->getNotesForBill();
-
+		if($_bill !== null) {
+			$_bill->getPrioritzed();
+			$_bill->getNotesForBill();
+		}
 		return $_bill;
 	}
 
@@ -2213,19 +2563,19 @@ class MSAAdmin extends MSAUser {
 		}else{
 			return False;
 		}
-    }
+	}
 
 	public function updateBillPriority($bill_id,$entity_type,$status,$client_id = null){
-	    $query = [
-	            'bill_id'=>$bill_id,
-                'entity_type'=>$entity_type
-            ];
+		$query = [
+			'bill_id'=>$bill_id,
+			'entity_type'=>$entity_type
+		];
 		if($client_id !== null){
 			$query['client_id'] = $client_id;
 		}
-	    if($status === 'enable'){
-		    //TODO Admin should prioritize for all clients
-            $query['user_id'] = $this->user_id;
+		if($status === 'enable'){
+			//TODO Admin should prioritize for all clients
+			$query['user_id'] = $this->user_id;
 			$result = $this->wpdb->insert( 'prioritized_bills', $query );
 			if($this->solr_active) {
 				$solr_result = apply_filters( 'solr_update_document_priority', $entity_type, $bill_id, true);
@@ -2297,7 +2647,7 @@ class MSAAdmin extends MSAUser {
 	}
 
 
-	public function getLegislationsSolr( $category = null, $federal = '', $search = null, $draw, $start, $request ) {
+	public function getLegislationsSolr( $category = null, $federal = '', $search = null, $draw, $start, $request ,$document_status = null ) {
 		$columns     = [
 			0  => 'legislation_id',
 			3  => 'state',
@@ -2315,7 +2665,15 @@ class MSAAdmin extends MSAUser {
 			'order_by' => $columns[ $request['order'][0]['column'] ],
 			'order'    => $request['order'][0]['dir']
 		];
-		$solr_result = apply_filters( 'solr_get_legislations', $category, $federal, null, $search, $start, $order );
+		$length =  $request['length'];
+		//echo $document_status;
+		if($document_status !== null){
+			$document_status = $this->reverseCalculateStatus($document_status);
+		}else{
+			$document_status = null;
+		}
+
+		$solr_result = apply_filters( 'solr_get_legislations', $category, $federal, null, $search, $start, $order,$document_status,$length );
 
 		$list = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 
@@ -2324,7 +2682,7 @@ class MSAAdmin extends MSAUser {
 				"SELECT leg.id as legislation_id,number,session,state,status_val,status_standard_val,type,title,abstract,sponsor_name,sponsor_url,
                 COUNT(DISTINCT bn.bill_id) as bookmark_note,GROUP_CONCAT(DISTINCT pm.pname) as categories,
                 (SELECT MAX(id) FROM prioritized_bills WHERE entity_type = 'legislation' and bill_id = leg.id) as priority,
-                (SELECT MAX(fetching_date) FROM unit_tests.last_updated AS lu LEFT JOIN import_table AS it ON lu.import_table_id = it.id WHERE document_id = leg.id and entity_type = 'legislation') as last_updated
+                (SELECT MAX(fetching_date) FROM last_updated AS lu LEFT JOIN import_table AS it ON lu.import_table_id = it.id WHERE document_id = leg.id and entity_type = 'legislation') as last_updated
                 FROM legislation AS leg 
 				LEFT JOIN bill_notes AS bn ON leg.id= bn.bill_id and entity_type = 'legislation' 
 				LEFT JOIN profile_match AS pm ON leg.id = pm.entity_id  and pm.entity_type = 'legislation'
@@ -2375,24 +2733,6 @@ class MSAAdmin extends MSAUser {
                        LIMIT {$start},10;";
 		//echo $query;
 		$_result = $this->wpdb->get_results( $query, OBJECT );
-		/*if ( $category !== null ) {
-			$_result = $this->wpdb->get_results( $this->wpdb->prepare(
-				"SELECT DISTINCT(entity_id) FROM profile_match
-                       WHERE entity_type = %s
-                       AND pname = %s",
-				MSABase::LEGISLATION,
-				$category ),
-				OBJECT );
-		} else {
-			$_result = $this->wpdb->get_results( $this->wpdb->prepare(
-				"SELECT DISTINCT(entity_id) FROM profile_match AS pm 
-                       LEFT JOIN legislation AS leg ON pm.entity_id = leg.id
-                       WHERE entity_type = %s
-                       ORDER BY {$order['order_by']} {$order['order']} 
-                       LIMIT %d,10",
-				MSABase::LEGISLATION,$start),
-				OBJECT );
-		}*/
 		$lista = [];
 		// validate user categories
 		foreach ( $_result as $profile_match ) {
@@ -2439,7 +2779,8 @@ class MSAAdmin extends MSAUser {
 			'order_by' => $columns[ $request['order'][0]['column'] ],
 			'order'    => $request['order'][0]['dir']
 		];
-		$solr_result = apply_filters( 'solr_get_regulations', $category, $federal, null, $search, $start, $order );
+		$length =  $request['length'];
+		$solr_result = apply_filters( 'solr_get_regulations', $category, $federal, null, $search, $start, $order,$length);
 		$list        = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 		if ( $list !== '' ) {
 			$_result = $this->wpdb->get_results(
@@ -2511,6 +2852,73 @@ class MSAAdmin extends MSAUser {
 		return $this->generateRegulationResult( $output );
 	}
 
+	public function getImportsLastWeek() {
+		$imports = $this->wpdb->get_results( "SELECT DISTINCT(import_id),entity_type FROM import_daily_mails as idm
+                                                    LEFT JOIN import_table ON idm.import_id = import_table.id
+                                                    WHERE YEARWEEK(daily_mail_sent_time, 1) = YEARWEEK(CURDATE(), 1) AND entity_type <> 'hearing';", ARRAY_A );
+
+		$this->last_week_imports = $this->group_by( $imports, 'entity_type', true, 'import_id' );
+		$leg_counter = 0;
+		$reg_counter = 0;
+		foreach ( $this->last_week_imports as $category => $ids ) {
+			            $ids = $this->getImportBills( $ids );
+						if ( $category === 'legislation' ) {
+							$leg_counter += count($ids);
+						} else {
+							$reg_counter += count($ids);
+						}
+		}
+
+		return ['leg_counter' => $leg_counter, 'reg_counter' => $reg_counter];
+
+	}
+	public function getClientLegislation() {
+		$this->clientlegislation = [];
+		$this->all_legislation = $this->wpdb->get_results( "SELECT leg.id FROM legislation AS leg LEFT JOIN session_info ON leg.session_id = session_info.id WHERE is_active = 1;" );
+
+		return $this->all_legislation;
+	}
+	public function getClientRegulation() {
+		$this->clientregulation = [];
+		$this->all_regulation = $this->wpdb->get_results( "SELECT DISTINCT(regulation.id)  FROM regulation;" );
+		return $this->all_regulation;
+	}
+	/**
+	 * @return array|object|null
+	 */
+	public function getClientLastUpdateLegislation(){
+		$this->last_legislation_import = $this->wpdb->get_row( "SELECT MAX(fetching_date),id FROM import_table as imt WHERE entity_type = 'legislation'",OBJECT);
+		$this->all_legislation_lastest = $this->wpdb->get_results( "SELECT * FROM last_updated WHERE import_table_id = {$this->last_legislation_import->id}",OBJECT);
+		return $this->all_legislation_lastest;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getClientLastUpdateRegulation(){
+		$this->last_regulation_import = $this->wpdb->get_row( "SELECT MAX(fetching_date),id FROM import_table as imt WHERE entity_type = 'regulation'",OBJECT);
+		$this->all_regulation_lastest = $this->wpdb->get_results( "SELECT * FROM last_updated WHERE import_table_id = {$this->last_regulation_import->id}",OBJECT);
+		return $this->all_regulation_lastest;
+	}
+
+	/**
+	 * Get last import for particular client (user) grouped by bill type
+	 * @return array|null
+	 */
+	public function getLastImportTimestamps(){
+		$_result = $this->wpdb->get_results("SELECT MAX(curation_date) as curation_date,entity_type FROM import_table GROUP BY entity_type",OBJECT);
+		if ($_result) {
+			$lastimports = [];
+			foreach ($_result as $res){
+				$lastimports[$res->entity_type] = $res->curation_date;
+			}
+			return $lastimports;
+		}else{
+			return null;
+		}
+
+	}
+
 
 	public function getHearingsSolr( $category = null, $federal = '', $search = null, $draw, $start, $request ) {
 		$columns     = [
@@ -2525,7 +2933,8 @@ class MSAAdmin extends MSAUser {
 			'order_by' => $columns[ $request['order'][0]['column'] ],
 			'order'    => $request['order'][0]['dir']
 		];
-		$solr_result = apply_filters( 'solr_get_hearings', $category, $federal, null, $search, $start, $order );
+		$length =  $request['length'];
+		$solr_result = apply_filters( 'solr_get_hearings', $category, $federal, null, $search, $start, $order,$length );
 
 		$list = ( implode( ',', $this->getSolrID( $solr_result ) ) );
 		//TODO implement solr and datable connection for number of visible items and paginating
@@ -2606,32 +3015,32 @@ class MSAAdmin extends MSAUser {
 	}
 
 	/**
-     * Returns all sessions row available
+	 * Returns all sessions row available
 	 * @return array|object|null
 	 */
 	public function getSessionInformationList(){
 		$_result= $this->wpdb->get_results("SELECT * FROM session_info",OBJECT);
 		return $_result;
-    }
+	}
 
 	/**
-     * Gets session information from session table by ID
+	 * Gets session information from session table by ID
 	 * @param $id
 	 *
 	 * @return array|object|void|null
 	 */
-    public function getSessionInformationEdit($id){
-	    $_result = $this->wpdb->get_row( "SELECT * FROM session_info WHERE id = {$id}", OBJECT );
-	    return $_result;
-    }
+	public function getSessionInformationEdit($id){
+		$_result = $this->wpdb->get_row( "SELECT * FROM session_info WHERE id = {$id}", OBJECT );
+		return $_result;
+	}
 
 	/**
 	 * @return array|object|null
 	 */
-    public function getSessitionListFromLegislation(){
-	    $_result = $this->wpdb->get_results("SELECT DISTINCT session FROM legislation",OBJECT);
-	    return $_result;
-    }
+	public function getSessitionListFromLegislation(){
+		$_result = $this->wpdb->get_results("SELECT DISTINCT session FROM legislation",OBJECT);
+		return $_result;
+	}
 }
 
 //we need to determine if user is : staff, user (client child) or visitor
@@ -2641,7 +3050,7 @@ function MSAvalidateUserRole() {
 		$_user       = get_userdata( get_current_user_id() );
 		$_user_roles = $_user->roles;
 		//TODO replace this with new "staff" role afterwards
-		if ( in_array( 'administrator', $_user_roles, true ) ) {
+		if ( in_array( 'staff', $_user_roles, true ) || in_array( 'administrator', $_user_roles, true ) ) {
 			$user = new MSAAdmin();
 		} else {
 			$user = new MSAUser();

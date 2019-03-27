@@ -14,10 +14,6 @@
       "MSATests\\": "tests/"
     }
   },
-  "repositories": [
-    { "type": "path", "url": "../dao" },
-    { "type": "vcs", "url": "git@github.com:ginkgostreet/msa-dao.git" }
-  ],
   "require-dev": {
     "phpunit/phpunit": "^6.5",
     "intelogie/sql-formatter": "^1.2"
@@ -30,6 +26,7 @@
   },
   "require": {
     "fabpot/goutte": "^3.2",
-    "ginkgostreetlabs/dao": "@dev"
+    "ginkgostreetlabs/dao": "@dev",
+    "phpoffice/phpspreadsheet": "^1.6"
   }
 }

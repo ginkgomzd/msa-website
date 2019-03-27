@@ -15,7 +15,7 @@ if ( ! isset( $_GET['id'] ) ) {
 ?>
 <!--Facebook share-->
 <script>
-    (function(d, s, id) {
+    (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s);
@@ -25,7 +25,10 @@ if ( ! isset( $_GET['id'] ) ) {
     }(document, 'script', 'facebook-jssdk'));
 
 </script>
-<a class="map-toggle-btn" href="<?php echo get_site_url() ?>/legislation-list/"><i class="fas fa-list"></i>Back to List</a>
+<?php if ( ! $user->user_is_visitor ) { ?>
+    <a class="map-toggle-btn" href="<?php echo get_site_url() ?>/legislation-list/"><i class="fas fa-list"></i>Back to
+        List</a>
+<?php } ?>
 <div class="container detailed_view">
     <div class="row">
         <!--       main  content -->
@@ -142,9 +145,15 @@ if ( ! isset( $_GET['id'] ) ) {
 			<?php if ( ! $user->user_is_visitor ) { ?>
                 <div class="social mb-3">
                     <div id="fb-root"></div>
-                    <div class="fb-share-button" data-href="https://test.com/?id=<?php echo $id; ?>" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo get_page_link();?>" ><i class="fab fa-facebook-f"></i></a></div>
-                    <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=<?php echo get_page_link().'?id='.$id ?>" data-size="small" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="mailto:?cc= &subject=Please check the following &body=<?php echo get_page_link().'?id='.$id ?>" target="_top"><i class="far fa-envelope"></i></a>
+                    <div class="fb-share-button" data-href="https://test.com/?id=<?php echo $id; ?>"
+                         data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank"
+                                                                                             href="https://www.facebook.com/sharer/sharer.php?u=<?php echo get_page_link(); ?>"><i
+                                    class="fab fa-facebook-f"></i></a></div>
+                    <a class="twitter-share-button"
+                       href="https://twitter.com/intent/tweet?text=<?php echo get_page_link() . '?id=' . $id ?>"
+                       data-size="small" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="mailto:?cc= &subject=Please check the following &body=<?php echo get_page_link() . '?id=' . $id ?>"
+                       target="_top"><i class="far fa-envelope"></i></a>
                 </div>
 			<?php } ?>
             <div>
@@ -176,7 +185,7 @@ if ( ! isset( $_GET['id'] ) ) {
             "                                <a value=\"New Note\" class=\"button gradient-bg\" id='new_note_add'><i class=\"fa fa-check\"></i> Add Note</a>\n" +
             "                            </div>\n" +
             "                        </div>";
-        $('.notes').on('click','.fa-trash',function () {
+        $('.notes').on('click', '.fa-trash', function () {
             var note_id = this.getAttribute('data-note-id');
             removeNote(note_id);
         });

@@ -35,23 +35,6 @@ function questions_plugin_setup_menu(){
         'dashicons-menu',//icon_url,
         '3'//position
     );
-    add_submenu_page(
-        'feeder',
-        'Legislations', //page title
-        'Legislations', //menu title
-        'manage_options', //capability,
-        'legislations',//menu slug
-        'legislation_page' //callback function
-    );
-        
-    add_submenu_page(
-        'feeder',
-        'Hearings', //page title
-        'Hearings', //menu title
-        'manage_options', //capability,
-        'hearings',//menu slug
-        'hearing_page' //callback function
-    );
 
     add_submenu_page(
         'feeder',
@@ -62,8 +45,19 @@ function questions_plugin_setup_menu(){
         'manage_bills_page'
     );
 
+    add_submenu_page(
+        'feeder',
+            'Curation Email',
+        'Curation Email',
+        'manage_options',
+        'manage_emails',
+        'manage_emails_page'
+    );
 }
 
+function manage_emails_page(){
+    load_template(plugin_dir_path(__FILE__). 'msa-feed-parser-master/manage_emails.php');
+}
 
 function manage_bills_page(){
     load_template(plugin_dir_path(__FILE__) . 'msa-feed-parser-master/manage_bills.php');

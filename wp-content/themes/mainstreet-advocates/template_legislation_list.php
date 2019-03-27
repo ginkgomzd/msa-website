@@ -6,9 +6,10 @@ if ( ! is_user_logged_in() ) {
 	get_header();
 	$user         = MSAvalidateUserRole();
 	$url          = get_site_url();
-	$get_r     = filter_input( INPUT_GET, 'document_type', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK );
+	$get_type     = filter_input( INPUT_GET, 'document_type', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK );
 	$get_category = filter_input( INPUT_GET, 'document_category', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK );
 	$get_state    = filter_input( INPUT_GET, 'document_state', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK );
+	$get_status   = filter_input( INPUT_GET, 'document_status', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK );
 }
 ?>
 <link rel="stylesheet" type="text/css"
@@ -41,14 +42,33 @@ if ( ! is_user_logged_in() ) {
 <script type="text/javascript" charset="utf8"
         src="<?php echo get_template_directory_uri() ?>/js/select2.min.js"></script>
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
+
+<script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
 <script type="text/javascript">
     window.addeventasync = function () {
         addeventatc.settings({
-            appleical: {show: true, text: "iCal"},
-            google: {show: true, text: "Google"},
-            outlook: {show: true, text: "Outlook"},
-            outlookcom: {show: false, text: "Outlook.com <em>(online)</em>"},
-            yahoo: {show: false, text: "Yahoo <em>(online)</em>"}
+            appleical: {
+                show: true,
+                text: "iCal"
+            },
+            google: {
+                show: true,
+                text: "Google"
+            },
+            outlook: {
+                show: true,
+                text: "Outlook"
+            },
+            outlookcom: {
+                show: false,
+                text: "Outlook.com <em>(online)</em>"
+            },
+            yahoo: {
+                show: false,
+                text: "Yahoo <em>(online)</em>"
+            }
         });
     };
     $("#list").on("mouseenter", "td", function () {
@@ -57,13 +77,14 @@ if ( ! is_user_logged_in() ) {
 </script>
 <style>
     /*td{
-        font-size: 15px;
-        max-width: 0;
-        max-height: 20px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }*/
+	font-size: 15px;
+	max-width: 0;
+	max-height: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}*/
+
     tr {
         height: 20px;
     }
@@ -76,8 +97,11 @@ if ( ! is_user_logged_in() ) {
 <div class="main list-page">
     <a class="map-toggle-btn" href="<?php echo get_site_url() ?>/dashboard/"><i class="fas fa-map-marker-alt"></i></a>
     <div class="container-fluid">
-        <h2>Legislations lists</h2>
+        <h2>Legislation lists</h2>
         <div class="list-filter">
+            <div class="form-group">
+                <input type="text" id="document_status" value="<?php echo $get_status; ?>" hidden>
+            </div>
             <div class="form-group">
                 <label>Document:</label>
                 <select name="document_type" id="document_type" class="select-b" autocomplete="off">
@@ -219,13 +243,13 @@ if ( ! is_user_logged_in() ) {
             "data": "isPriority",
             "title": "Priority",
             "mRender": function (source, type, row, val) {
-                return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Bill has been prioritized</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">Bill has not been prioritized</span></i>'
+                return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Yes</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">No</span></i>'
             }
         }, {
             "data": "bookmark_note",
             "title": "Bookmark",
             "mRender": function (source, type, row, val) {
-                return source == '1' ? '<i class="fas fa-bookmark"></i>' : '<i class="far fa-bookmark"></i>'
+                return source == '1' ? '<i class="fas fa-bookmark"><span hidden>Yes</span></i>' : '<i class="far fa-bookmark"><span hidden>No</span></i>'
             }
         }, {
             "data": "state",
@@ -245,8 +269,7 @@ if ( ! is_user_logged_in() ) {
         }, {
             "data": "categories",
             "title": "Categories"
-        }
-        ];
+        }];
         var legislation_columnList = [{
             "data": "id",
             "title": "ID",
@@ -257,13 +280,13 @@ if ( ! is_user_logged_in() ) {
             "data": "isPriority",
             "title": "Priority",
             "mRender": function (source, type, row, val) {
-                return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Bill has been prioritized</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">Bill has not been prioritized</span></i>'
+                return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Yes</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">No</span></i>'
             }
         }, {
             "data": "bookmark_note",
-            "title": "Bookmark Note",
+            "title": "Bookmark",
             "mRender": function (source, type, row, val) {
-                return source == '1' ? '<i class="fas fa-bookmark"></i>' : '<i class="far fa-bookmark"></i>'
+                return source == '1' ? '<i class="fas fa-bookmark"><span hidden>Yes</span></i>' : '<i class="far fa-bookmark"><span hidden>No</span></i>'
             }
         }, {
             "data": "state",
@@ -304,61 +327,115 @@ if ( ! is_user_logged_in() ) {
         }, {
             "data": 'status_standard_val',
             "title": "Latest action"
-        }
-        ];
-        var hearings_columnList = [
-            {
-                "data": "id",
-                "title": "ID",
-                "mRender": function (source, type, val) {
-                    return "<a href='<?php echo $url; ?>/hearing-detailed-view/?id=" + source + "'>" + source + "</a>";
-                }
-            }, {
-                "data": "isPriority",
-                "title": "Priority",
-                "mRender": function (source, type, row, val) {
-                    return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Bill has been prioritized</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">Bill has not been prioritized</span></i>'
-                }
-            }, {
-                "data": "bookmark_note",
-                "title": "Bookmark",
-                "mRender": function (source, type, row, val) {
-                    return source == '1' ? '<i class="fas fa-bookmark"></i>' : '<i class="far fa-bookmark"></i>'
-                }
-            }, {
-                "data": "date",
-                "title": "Date"
-            }, {
-                "data": "time",
-                "title": "Time"
-            }, {
-                "data": "house",
-                "title": "House"
-            }, {
-                "data": "committee",
-                "title": "Committee"
-            }, {
-                "data": "place",
-                "title": "Place"
-            }, {
-                "data": null,
-                "title": "Action",
-                "mRender": function (source, type, row, val) {
-                    addeventatc.refresh();
-                    var leg_title = ('leg_title' in row) ? row.leg_title : "No Information";
-                    return '<div title="Add to Calendar" class="addeventatc" data-styling="none">\n' +
-                        '\t    <img src="<?php echo get_template_directory_uri();?>/gfx/icon-calendar-t1.svg" alt="" style="width:18px;" />\n' +
-                        '\t    <span class="start">' + row.date + ' ' + row.time + '</span>\n' +
-                        '\t    <span class="timezone">' + state_timezones[row.state] + '</span>\n' +
-                        '\t    <span class="title">Hearing - ' + row.committee + '</span>\n' +
-                        '\t    <span class="location">' + row.place + '</span>\n' +
-                        '\t    <span class="description">Bill Legislation Number: ' + row.external_id + ' <br>Bill/legislation title: ' + leg_title + ' </span>\n' +
-                        '\t    <span class="all_day_event">true</span>\n' +
-                        '\t</div>';
-
-                }
+        }];
+        var hearings_columnList = [{
+            "data": "id",
+            "title": "ID",
+            "mRender": function (source, type, val) {
+                return "<a href='<?php echo $url; ?>/hearing-detailed-view/?id=" + source + "'>" + source + "</a>";
             }
-        ];
+        }, {
+            "data": "isPriority",
+            "title": "Priority",
+            "mRender": function (source, type, row, val) {
+                return source == '1' ? '<i class="fas fa-star"><span class="fas-star-tooltiptext">Yes</span></i>' : '<i class="far fa-star"><span class="far-star-tooltiptext">No</span></i>'
+            }
+        }, {
+            "data": "bookmark_note",
+            "title": "Bookmark",
+            "mRender": function (source, type, row, val) {
+                return source == '1' ? '<i class="fas fa-bookmark"><span hidden>Yes</span></i>' : '<i class="far fa-bookmark"><span hidden>No</span></i>'
+            }
+        }, {
+            "data": "date",
+            "title": "Date"
+        }, {
+            "data": "time",
+            "title": "Time"
+        }, {
+            "data": "house",
+            "title": "House"
+        }, {
+            "data": "committee",
+            "title": "Committee"
+        }, {
+            "data": "place",
+            "title": "Place"
+        }, {
+            "data": null,
+            "title": "Action",
+            "mRender": function (source, type, row, val) {
+                addeventatc.refresh();
+                var leg_title = ('leg_title' in row) ? row.leg_title : "No Information";
+                return '<div title="Add to Calendar" class="addeventatc" data-styling="none">\n' +
+                    '\t    <img src="<?php echo get_template_directory_uri();?>/gfx/icon-calendar-t1.svg" alt="" style="width:18px;" />\n' +
+                    '\t    <span class="start">' + row.date + ' ' + row.time + '</span>\n' +
+                    '\t    <span class="timezone">' + state_timezones[row.state] + '</span>\n' +
+                    '\t    <span class="title">Hearing - ' + row.committee + '</span>\n' +
+                    '\t    <span class="location">' + row.place + '</span>\n' +
+                    '\t    <span class="description">Bill Legislation Number: ' + row.external_id + ' <br>Bill/legislation title: ' + leg_title + ' </span>\n' +
+                    '\t    <span class="all_day_event">true</span>\n' +
+                    '\t</div>';
+
+            }
+        }];
+
+        var oldExportAction = function (self, e, dt, button, config) {
+            if (button[0].className.indexOf('buttons-excel') >= 0){
+                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+            }else if (button[0].className.indexOf('buttons-pdf') >= 0){
+                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self,e,dt,button,config);
+            }else if(button[0].className.indexOf('buttons-csv') >= 0 ){
+                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config);
+            }else if(button[0].className.indexOf('buttons-copy') >= 0 ){
+                $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+            }
+        };
+
+        var newExportAction = function (e, dt, button, config) {
+            console.log('TEST');
+            var self = this;
+            var oldStart = dt.settings()[0]._iDisplayStart;
+
+            dt.one('preXhr', function (e, s, data) {
+                // Just this once, load all data from the server...
+                data.start = 0;
+                data.length = 2147483647;
+
+                dt.one('preDraw', function (e, settings) {
+                    // Call the original action function
+                    oldExportAction(self, e, dt, button, config);
+
+                    dt.one('preXhr', function (e, s, data) {
+                        // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                        // Set the property to what it was before exporting.
+                        settings._iDisplayStart = oldStart;
+                        data.start = oldStart;
+                    });
+
+                    // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                    setTimeout(dt.ajax.reload, 0);
+
+                    // Prevent rendering of the full data to the DOM
+                    return false;
+                });
+            });
+
+            // Requery the server with the new one-time export settings
+            dt.ajax.reload();
+        };
+
+        function generateAjaxUrl() {
+            var ajax_url = '<?php echo $url; ?>/wp-content/themes/mainstreet-advocates/legapi.php?cat=legislation';
+            if ($("#custom_search").val()) {
+                ajax_url += '&text_filter=' + $("#custom_search").val();
+            }
+            if ($('#document_status').val()) {
+                ajax_url += '&document_status=' + $('#document_status').val();
+            }
+            console.log(ajax_url);
+            return ajax_url;
+        }
 
         function loadDataTable(type) {
             var dataSrc = [];
@@ -379,39 +456,49 @@ if ( ! is_user_logged_in() ) {
                 //searchcolumns = [4, 5, 6];
             }
             var ajax_url = '<?php echo $url; ?>/wp-content/themes/mainstreet-advocates/legapi.php?cat=' + type;
-            if ($("#document_category").val()) {
-                ajax_url += '&category=' + $("#document_category").val();
-            }
             if ($("#document_federal").val()) {
                 ajax_url += '&federal=' + $("#document_federal").val();
             }
             if ($("#custom_search").val()) {
                 ajax_url += '&text_filter=' + $("#custom_search").val();
             }
+            if ($('#document_status').val()) {
+                ajax_url += '&document_status=' + $('#document_status').val();
+            }
+            if($('#document_category').val()){
+                ajax_url += '&category=' + $('#document_category').val();
+            }
             (myTable = $('#list')).DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
-                buttons: ['print',
+                buttons: [
                     {
                         extend: 'copyHtml5',
+                        action: newExportAction,
                         exportOptions: {
                             columns: [0, ':visible']
                         }
                     },
                     {
                         extend: 'excelHtml5',
+                        action: newExportAction,
+                        filename :  $('#document_type').val().charAt(0).toUpperCase() + $('#document_type').val().slice(1) + ' - MainStreetAdvocates',
                         exportOptions: {
                             columns: ':visible'
                         }
                     },
                     {
                         extend: 'csvHtml5',
+                        action: newExportAction,
+                        filename :  $('#document_type').val().charAt(0).toUpperCase() + $('#document_type').val().slice(1) + ' - MainStreetAdvocates',
                         exportOptions: {
                             columns: ':visible'
                         }
                     },
                     {
                         extend: 'pdfHtml5',
+                        action: newExportAction,
+                        filename :  $('#document_type').val().charAt(0).toUpperCase() + $('#document_type').val().slice(1) + ' - MainStreetAdvocates',
                         exportOptions: {
                             columns: ':visible',
                         },
@@ -425,42 +512,44 @@ if ( ! is_user_logged_in() ) {
                 //"sPaginationType": "full_numbers",
                 "ajax": ajax_url,
                 aoColumns: columnList,
-                responsive: true,
                 paging: true,
                 searching: false,
                 "columnDefs": [
-                    (type === 'legislation' ? {"orderable": false, "targets": [1, 2, 10, 12]} : {
+                    (type === 'legislation' ? {
+                        "orderable": false,
+                        "targets": [1, 2, 10, 12]
+                    } : {
                         "orderable": false,
                         "targets": [1, 2, -1]
                     })
                     //{ "orderable": false, "targets": [1, 2,10,12] }
                 ]
                 /*'initComplete': function () {
-                   /* var api = this.api();
+				   /* var api = this.api();
 
-                    // Populate a dataset for autocomplete functionality
-                    // using data from first, second and third columns
-                    api.cells('tr', searchcolumns).every(function () {
-                        // Get cell data as plain text
-                        var data = $('<div>').html(this.data()).text();
-                        if (dataSrc.indexOf(data) === -1) {
-                            dataSrc.push(data);
-                        }
-                    });
+					// Populate a dataset for autocomplete functionality
+					// using data from first, second and third columns
+					api.cells('tr', searchcolumns).every(function () {
+						// Get cell data as plain text
+						var data = $('<div>').html(this.data()).text();
+						if (dataSrc.indexOf(data) === -1) {
+							dataSrc.push(data);
+						}
+					});
 
-                    // Sort dataset alphabetically
-                    dataSrc.sort();
+					// Sort dataset alphabetically
+					dataSrc.sort();
 
-                    // Initialize Typeahead plug-in
-                    $('.dataTables_filter input[type="search"]', api.table().container())
-                        .typeahead({
-                                source: dataSrc,
-                                afterSelect: function (value) {
-                                    api.search(value).draw();
-                                }
-                            }
-                        );
-                }*/
+					// Initialize Typeahead plug-in
+					$('.dataTables_filter input[type="search"]', api.table().container())
+						.typeahead({
+								source: dataSrc,
+								afterSelect: function (value) {
+									api.search(value).draw();
+								}
+							}
+						);
+				}*/
             }), myTable.on("click", ".fa-star", function () {
                 //handle priority clicked
                 var id = $(this).closest("tr").find("td:first a").html();
@@ -477,7 +566,12 @@ if ( ! is_user_logged_in() ) {
                 $.ajax({
                     type: 'POST',
                     url: '<?php echo $url; ?>/wp-content/themes/mainstreet-advocates/legapi.php',
-                    data: {"id": id, "type": type, "action": "priority", "status": status},
+                    data: {
+                        "id": id,
+                        "type": type,
+                        "action": "priority",
+                        "status": status
+                    },
                     dataType: 'JSON',
                     success: function (response) {
                         if (status === 'disable') {
@@ -524,39 +618,39 @@ if ( ! is_user_logged_in() ) {
         });
 
         $('.select-b').select2({
-                placeholder: {
-                    id: '', // the value of the option
-                    text: 'Select an option',
-                }
+            placeholder: {
+                id: '', // the value of the option
+                text: 'Select an option',
             }
-        );
+        });
 
         /*$('#custom_search').on( 'keyup', function (e) {
-            //if(e.which == 13) {
-            if($(this).val().length > 3) {
-                if ($('#document_type').val() != '') {
-                    //loadDataTable($('#document_type').val());
-                    $('.btn-clear-search-filter').show();
-                } else {
-                    alert("Please select type of document first!");
-                }
-            }
-            //}
-        } );*/
+			//if(e.which == 13) {
+			if($(this).val().length > 3) {
+				if ($('#document_type').val() != '') {
+					//loadDataTable($('#document_type').val());
+					$('.btn-clear-search-filter').show();
+				} else {
+					alert("Please select type of document first!");
+				}
+			}
+			//}
+		} );*/
 
         $('#custom_search').typeahead({
             minLength: 3,
             source: function (query, process) {
                 return $.post(
-                    '<?php echo $url; ?>/wp-content/themes/mainstreet-advocates/legapi.php',
-                    { searchFilter: query },
+                    '<?php echo $url; ?>/wp-content/themes/mainstreet-advocates/legapi.php', {
+                        searchFilter: query
+                    },
                     function (data) {
                         return process(data);
-                    },'json');
+                    }, 'json');
             }
 
-        }).on( 'keyup', function (e) {
-            if(e.which == 13) {
+        }).on('keyup', function (e) {
+            if (e.which == 13) {
                 if ($('#document_type').val() != '') {
                     loadDataTable($('#document_type').val());
                     $('.btn-clear-search-filter').show();
@@ -564,7 +658,7 @@ if ( ! is_user_logged_in() ) {
                     alert("Please select type of document first!");
                 }
             }
-        } );
+        });
 
         $('.multiple').select2({
             multiple: true,
@@ -576,5 +670,4 @@ if ( ! is_user_logged_in() ) {
 
         });
     });
-
 </script>

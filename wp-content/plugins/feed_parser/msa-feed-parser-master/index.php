@@ -5,6 +5,7 @@ use MainStreetAdvocates\Feed;
 add_action( 'wp_loaded', 'wp_mail' );
 /* DEV: */
 ini_set('display_errors', 1);
+ini_set('max_execution_time',0);
 define('DEBUG', TRUE); // DISABLE FOR PRODUCTION
 define('DEBUG_VERBOSE_SQL', FALSE);
 /* END DEV */
@@ -49,7 +50,7 @@ $user = MSAvalidateUserRole();
     if (isset($_POST['feed-upload-submit'])) {
         
         $submission = $_FILES['feed-upload'];
-        $uloaded_file='../wp-content/uploads/tmp/' . $_FILES['feed-upload']['name'];
+        $uloaded_file='../wp-content/uploads/xmlbills/' . $_FILES['feed-upload']['name'];
         
         if(!move_uploaded_file($_FILES['feed-upload']['tmp_name'],$uloaded_file )){
             die('Error uploading file - check destination is writable.');

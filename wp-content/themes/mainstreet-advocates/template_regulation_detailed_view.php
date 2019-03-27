@@ -6,10 +6,16 @@ if ( ! isset( $_GET['id'] ) ) {
 		500
 	);
 } else {
-	get_header();
 	$id   = $_GET["id"];
 	$user = MSAvalidateUserRole();
 	$row  = $user->getRegulationBillDetail( $id );
+	if($row == null){
+		wp_die(
+			'<h1>' . __( 'There is no regulation document with this ID!' ) . '</h1>',
+			500
+		);
+	}
+	get_header();
 }
 ?>
 <!--Facebook share-->
@@ -24,9 +30,9 @@ if ( ! isset( $_GET['id'] ) ) {
     }(document, 'script', 'facebook-jssdk'));
 
 </script>
-
+<?php if ( ! $user->user_is_visitor )  { ?>
 <a class="map-toggle-btn" href="<?php echo get_site_url() ?>/legislation-list/"><i class="fas fa-list"></i>Back to List</a>
-
+<?php } ?>
 <div class="container detailed_view">
     <div class="row">
         <!--       main  content -->

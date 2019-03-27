@@ -20,10 +20,14 @@ if ( ! is_user_logged_in() ) {
 }
 
 ?>
+
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
 <div class="main list-page">
 	<div class="container-fluid">
 		<h2>Sessions list</h2>
-        <a href="<?php echo get_site_url();?>/sessions-add/" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Add New Session</a>
+        <a href="<?php echo get_site_url();?>/sessions-add/" class="add-btn button gradient-bg" role="button" aria-pressed="true"><i class="fa fa-plus" aria-hidden="true"></i> Add New Session</a>
 		<table id="legislation" class="display" width="100%" cellspacing="0">
 			<thead>
 			<tr>
@@ -59,6 +63,7 @@ if ( ! is_user_logged_in() ) {
 	$(document).ready(function () {
 		$('#legislation').dataTable({
             dom: 'Bfrtip',
+            responsive: true,
             buttons: ['print',
                 {
                     extend: 'copyHtml5',

@@ -2,14 +2,16 @@
 <?php
 if ( ! isset( $_GET['id'] ) ) {
 	wp_die(
-		'<h1>' . __( 'Page is not properly called.' ) . '</h1>',
+		'<h1>' . __( 'Page is not properly called!' ) . '</h1>',
 		500
 	);
 } else {
-	get_header();
+
 	$id   = $_GET["id"];
 	$user = MSAvalidateUserRole();
 	$row  = $user->getLegislationBillDetail( $id );
+	get_header();
+
 }
 ?>
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
@@ -52,9 +54,9 @@ if ( ! isset( $_GET['id'] ) ) {
     }(document, 'script', 'facebook-jssdk'));
 
 </script>
-
+<?php if ( ! $user->user_is_visitor )  { ?>
 <a class="map-toggle-btn" href="<?php echo get_site_url() ?>/legislation-list/"><i class="fas fa-list"></i>Back to List</a>
-
+<?php }?>
 <div class="container detailed_view">
    
     <div class="row">
@@ -79,8 +81,10 @@ if ( ! isset( $_GET['id'] ) ) {
                             Sponsors
                         </td>
                         <td>
+                            <?php if (!empty($row->sponsor_url) ){?>
                             <a href="<?php echo $row->sponsor_url; ?>" target="_blank">
                                 <?php echo $row->sponsor_name; ?></a>
+                            <?php }else{ echo $row->sponsor_name;}?>
                         </td>
                     </tr>
                     <tr>
@@ -257,6 +261,7 @@ if ( ! isset( $_GET['id'] ) ) {
                 </div>
             </section>
             <br>
+            <?php if ( ! $user->user_is_visitor ) {?>
             <section id="Additional-info" class="opening-hours">
                 <h2>Hearings</h2>
                 <div class="hearings">
@@ -294,11 +299,12 @@ if ( ! isset( $_GET['id'] ) ) {
                         <span class="client">aIsdvMxakzwXLcaAzmca59414</span>
                     </div>
                     <?php } else { ?>
-                    <button class="button gradient-bg btn-small mt-4 w-100 text-center"><i class="far fa-calendar-alt"></i> Add to calendar
+                        <button class="button btn-small mt-4 w-100 text-center" style="border-bottom: none;"><i class="far fa-calendar-alt"></i> Add to calendar
                     </button>
                     <?php } ?>
                 </div>
             </section>
+            <?php }?>
         </div>
     </div>
 </div>
