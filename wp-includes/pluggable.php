@@ -327,7 +327,8 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
 
 	if ( !isset( $from_email ) ) {
 		// Get the site domain and get rid of www.
-		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+		//$sitename = strtolower( $_SERVER['SERVER_NAME'] ); // DOB replaced please refer to patch https://core.trac.wordpress.org/attachment/ticket/25239/25239.r44770.patch
+		$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
 			$sitename = substr( $sitename, 4 );
 		}
@@ -1515,7 +1516,8 @@ function wp_notify_postauthor( $comment_id, $deprecated = null ) {
 		$notify_message .= sprintf( __( 'Spam it: %s' ), admin_url( "comment.php?action=spam&c={$comment->comment_ID}#wpbody-content" ) ) . "\r\n";
 	}
 
-	$wp_email = 'wordpress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
+	//$wp_email = 'wordpress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME'])); // DOB replaced please refer to https://core.trac.wordpress.org/attachment/ticket/25239/25239.r44770.patch
+	$wp_email = 'wordpress@' . preg_replace( '#^www\.#', '', wp_parse_url( network_home_url(), PHP_URL_HOST ) );
 
 	if ( '' == $comment->comment_author ) {
 		$from = "From: \"$blogname\" <$wp_email>";
