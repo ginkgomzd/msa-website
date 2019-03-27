@@ -126,17 +126,21 @@ class Solr_Search {
 		//adding global plugin filter
 		add_filter('solr_get_core',array($this,'getCoreStatus'),10,1);
 		//Exposing filters for other plugins
-		add_filter('solr_get_legislations',array( $this, 'getLegislations' ),10,6);
-		add_filter('solr_get_hearings',array( $this, 'getHearings' ),10,6);
-		add_filter('solr_get_regulations',array($this,'getRegulations'),10,6);
+		add_filter('solr_get_legislations',array( $this, 'getLegislations' ),10,9);
+		add_filter('solr_get_hearings',array( $this, 'getHearings' ),10,8);
+		add_filter('solr_get_regulations',array($this,'getRegulations'),10,8);
 
 		add_filter('solr_get_dashboard_main',array($this,'getDashboardMain'),10,6);
 		add_filter('solr_update_document_priority',array($this,'updateDocumentPriority'),10,3);
 		add_filter('solr_typehead_suggestion',array($this,'typeheadSuggestion'),10,1);
 		add_filter('solr_reindex_core',array($this,'solrReindexCore'),10,1);
+		add_filter('solr_create_new_core',array($this,'solrCreateCore'),10,1);
+		add_filter('solr_get_upcoming_hearings',array($this,'getUpcomingHearings'),10,2);
 	} // End __construct ()
 
-
+	public function solrCreateCore($client_id = null){
+		return $this->solr_client->createCore($client_id);
+	}
 	/**
 	 * @param null $client_id
 	 *
@@ -173,6 +177,13 @@ class Solr_Search {
 	public function updateDocumentPriority($document_type,$document_id,$document_priority){
 		return $this->solr_client->updateDocumentPriority($document_type,$document_id,$document_priority);
 	}
+
+	public function getUpcomingHearings($exclude_categories,$exclude_states){
+		if ($exclude_categories !== null) {
+			$this->solr_client->buildQueryCategory( $exclude_categories );
+		}
+		return $this->solr_client->upcomingHearings($exclude_states);
+	}
 	/**
 	 * @param $document_type
 	 * @param null $category
@@ -198,12 +209,12 @@ class Solr_Search {
 	 *
 	 * @return mixed
 	 */
-	public function getHearings($category = null, $federal = '', $user_ignore_categories  = null,$search = null,$current_page = 1,$order = []){
+	public function getHearings($category = null, $federal = '', $user_ignore_categories  = null,$search = null,$current_page = 1,$order = [],$length,$exclude_states = null){
 
 		if ($user_ignore_categories !== null) {
 			$this->solr_client->buildQueryCategory( $user_ignore_categories );
 		}
-		return $this->solr_client->querySolr('hearing',$category,$federal,$search,$current_page, $order);
+		return $this->solr_client->querySolr('hearing',$category,$federal,$search,$current_page, $order,null,$length,$exclude_states);
 	}
 
 	/**
@@ -214,12 +225,12 @@ class Solr_Search {
 	 *
 	 * @return mixed
 	 */
-	public function getRegulations($category = null, $federal = '', $user_ignore_categories  = null,$search = null,$current_page = 1,$order = []){
+	public function getRegulations($category = null, $federal = '', $user_ignore_categories  = null,$search = null,$current_page = 1,$order = [],$length,$exclude_states = null){
 
 		if ($user_ignore_categories !== null) {
 			$this->solr_client->buildQueryCategory( $user_ignore_categories );
 		}
-		return $this->solr_client->querySolr('regulation',$category,$federal,$search,$current_page, $order);
+		return $this->solr_client->querySolr('regulation',$category,$federal,$search,$current_page, $order,null,$length,$exclude_states);
 	}
 
 	/**
@@ -232,12 +243,13 @@ class Solr_Search {
 	 *
 	 * @return mixed
 	 */
-	public function getLegislations($category = null , $federal = '',$user_ignore_categories = null,$search = null,$current_page = 1,$order = []){
+	public function getLegislations($category = null , $federal = '',$user_ignore_categories = null,$search = null,$current_page = 1,$order = [],$status = null,$length,$exclude_states = null){
 
 		if ($user_ignore_categories !== null) {
 			$this->solr_client->buildQueryCategory( $user_ignore_categories );
 		}
-		return $this->solr_client->querySolr('legislation',$category,$federal,$search,$current_page, $order);
+
+		return $this->solr_client->querySolr('legislation',$category,$federal,$search,$current_page, $order,$status,$length,$exclude_states);
 	}
 
 	/**
