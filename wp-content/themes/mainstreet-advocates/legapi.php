@@ -12,7 +12,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 		$client_id = $_POST['client_id'];
 	}
 	if ( isset( $_POST['action'] ) && $_POST['action'] === 'priority' ) {
-		$user->reindexSolrCore();
+		//$user->reindexSolrCore();
 		$result = $user->updateBillPriority( $_POST['id'], $_POST['type'], $_POST['status'], $client_id );
 		echo json_encode( array( 'status' => ( $result === true ) ? true : false ) );
 	}else if (isset($_POST['action']) && $_POST['action'] === 'hide'){
@@ -25,10 +25,15 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 	$state    = '';
 	$category = null;
 	$search   = null;
+	$status = null;
+
 	if ( isset( $_GET['cat'] ) ) {
 		$cat = $_GET['cat'];
 	} else {
 		$cat = '%';
+	}
+	if(isset($_GET['document_status'])){
+		$status = $_GET['document_status'];
 	}
 	if ( isset( $_GET['text_filter'] ) ) {
 		$search = $_GET['text_filter'];
@@ -48,7 +53,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 	}
 	if ( $cat === 'legislation' ) {
 		if ( $user->solr_active ) {
-			$end_result = $user->getLegislationsSolr( $category, $state, $search, $draw, $_GET['start'], $_GET );
+			$end_result = $user->getLegislationsSolr( $category, $state, $search, $draw, $_GET['start'], $_GET ,$status );
 		} else {
 			$end_result = $user->getLegislations( $category, $state, $draw, $_GET['start'], $_GET );
 		}

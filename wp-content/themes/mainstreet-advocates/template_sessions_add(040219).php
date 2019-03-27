@@ -52,80 +52,80 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 ?>
 
     <div class="container">
-        <div class="row" style="display: block;">
-            <div class="col-md-10">
-                <h2 class="mt-5 mb-5">Add new session</h2>
+        <div class="row">
+            <div class="col-md-8">
+               <h2 class="mt-5 mb-5">Add new session</h2>
                 <form action="" method="POST">
-                    <div class="form-group row">
-                        <label for="session_name" class="col-md-3 col-lg-2 col-form-label">Session Name</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="text" class="form-control col-md-8" id="session_name" placeholder="Session Name" name="session_name">
+                    <div class="form-group">
+                        <label for="session_name" class="col-sm-2 col-form-label">Session Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="session_name" placeholder="Session Name" name="session_name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="session_info" class="col-sm-2 col-form-label">Info</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="5" id="session_info" name="session_info" placeholder="Info"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="session_info" class="col-md-3 col-lg-2 col-form-label">Info</label>
-                        <div class="col-md-9 col-lg-10">
-                        <textarea class="form-control" rows="5" id="session_info" name="session_info" placeholder="Info"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="session_state" class="col-md-3 col-lg-2 col-form-label">Sessions</label>
-                        <div class="col-md-9 col-lg-10">
-                        <select class="form-control" id="session_year" name="session_year">
+                        <label for="session_state" class="col-sm-2 col-form-label">Sessions</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="session_year" name="session_year">
                         <option value="">Select Session</option>
 						<?php foreach ( $sesions_list as $session ) { ?>
                             <option value="<?php echo $session->session ?>"><?php echo $session->session ?></option>
 						<?php } ?>
                     </select>
-                    </div>
+                        </div>
                     </div>
                     <div class="form-group row">
-                        <label for="session_state" class="col-md-3 col-lg-2 col-form-label">State</label>
-                        <div class="col-md-9 col-lg-10">
-                        <select class="form-control" id="session_state" name="session_state">
+                        <label for="session_state" class="col-sm-2 col-form-label">State</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="session_state" name="session_state">
                         <option value="">Select State</option>
                     </select>
-                    </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="start_date" class="col-md-3 col-lg-2 col-form-label">Start Date</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="date" id="start_date" name="start_date">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="end_date" class="col-md-3 col-lg-2 col-form-label">End Date</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="date" id="end_date" name="end_date">
+                        <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
+                        <div class="col-10">
+                            <input type="date" id="start_date" name="start_date">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="prefiling" class="col-md-3 col-lg-2 col-form-label">Prefiling</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="text" class="form-control" id="prefiling" name="prefiling" placeholder="Prefiling">
+                        <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
+                        <div class="col-10">
+                            <input type="date" id="end_date" name="end_date">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="convene_date" class="col-md-3 col-lg-2 col-form-label">Convene date</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="date" id="convene_date" name="convene_date">
+                        <label for="prefiling" class="col-sm-2 col-form-label">Prefiling</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="prefiling" name="prefiling" placeholder="Prefiling">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adjourn_date" class="col-md-3 col-lg-2 col-form-label">Adjourn date</label>
-                        <div class="col-md-9 col-lg-10">
-                        <input type="date" id="adjourn_date" name="adjourn_date">
+                        <label for="convene_date" class="col-sm-2 col-form-label">Convene date</label>
+                        <div class="col-sm-10">
+                            <input type="date" id="convene_date" name="convene_date">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="additional_info" class="col-md-3 col-lg-2 col-form-label">Additional info</label>
-                        <div class="col-md-9 col-lg-10">
-                        <textarea class="form-control" rows="5" id="additional_info" name="additional_info" placeholder="Additional info...."></textarea>
+                        <label for="adjourn_date" class="col-sm-2 col-form-label">Adjourn date</label>
+                        <div class="col-sm-10">
+                            <input type="date" id="adjourn_date" name="adjourn_date">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-md-3 col-lg-2 col-sm-2">Session Carry Over</div>
-                        <div class="col-md-9 col-lg-10 col-sm-10">
+                        <label for="additional_info" class="col-sm-2 col-form-label">Additional info</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="5" id="additional_info" name="additional_info" placeholder="Additional info...."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-2">Session Carry Over</div>
+                        <div class="col-sm-10">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="carryover" name="carryover">
                                 <label class="form-check-label" for="carryover">
@@ -135,8 +135,8 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-md-3 col-lg-2 col-sm-2">Session Active</div>
-                        <div class="col-md-3 col-lg-2 col-sm-10">
+                        <div class="col-sm-2">Session Active</div>
+                        <div class="col-sm-10">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active">
                                 <label class="form-check-label" for="is_active">
@@ -145,10 +145,9 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="text-right">
-                            <button type="button" class="button grey" value="Cancel">Cancel</button>
-                            <button type="submit" class="button mr-0 gradient-bg" value="submit">Save</button>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary" value="submit">Save</button>
                         </div>
                     </div>
                 </form>
@@ -240,7 +239,6 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
             }
 
             $('#session_year').on('change', function() {
-                $('#session_state').empty().append('<option selected="selected" value="">Slect state</option>');
                 if (this.value) {
                     populateStates(this.value);
                 }
