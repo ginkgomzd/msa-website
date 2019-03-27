@@ -134,7 +134,9 @@ class Feed {
 	public function save() {
 			$this->models_saved = array_map(
 				function ( $model ) {
+					if($model !== null){
 					$model->save();
+					}
 				}, $this->models );
 	}
 
@@ -154,6 +156,7 @@ class Feed {
 				}
 			}
 		}
+
 		foreach ($tmp as $key => $import){
 			$model = new Import();
 			$model->client_id = $key;

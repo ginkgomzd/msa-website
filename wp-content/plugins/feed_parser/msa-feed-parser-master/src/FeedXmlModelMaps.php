@@ -119,7 +119,7 @@ class FeedXmlModelMaps {
 
 		$reg->setTexts( self::createActionTextModels( $el ) );
 		$reg->setMatches( self::createProfileMatchModels( $el ) );
-		$reg->setEntityText(self::createEntityTextModel($reg->full_text_url,$reg->full_text_local_url));
+		$reg->setEntityText(self::createEntityTextModel($reg->full_text_url,$reg->full_text_local_url,$reg->external_id));
 
 		return $reg;
 	}
@@ -129,15 +129,15 @@ class FeedXmlModelMaps {
 	 * @param full_text_$url
 	 * @return array
 	 */
-	private static function createEntityTextModel($full_text_url,$full_text_local_url){
+	private static function createEntityTextModel($full_text_url,$full_text_local_url,$external_id){
 		$models = [];
 		if ($full_text_url !== '' || $full_text_local_url !== '') {
 			$model = new EntityText();
 			try {
 				if ( $full_text_url !== '' ) {
-					$model->getContent( $full_text_url );
+					$model->getContent( $full_text_url,$external_id );
 				} else {
-					$model->getContent( $full_text_local_url );
+					$model->getContent( $full_text_local_url ,$external_id);
 				}
 			}catch (\Exception $e){
 				 return $models;
@@ -283,7 +283,7 @@ class FeedXmlModelMaps {
 
 		$leg->setMatches( self::createProfileMatchModels( $el ) );
 		$leg->setBills( self::createBillsMatchModels( $el ) );
-		$leg->setEntityText(self::createEntityTextModel($leg->full_text_url,$leg->full_text_url));
+		$leg->setEntityText(self::createEntityTextModel($leg->full_text_url,$leg->full_text_url,$leg->external_id));
 
 		if(!empty($leg->getEntityText())){
 			$leg->textUploaded = TRUE;

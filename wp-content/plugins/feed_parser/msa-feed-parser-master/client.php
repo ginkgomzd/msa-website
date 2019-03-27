@@ -74,7 +74,7 @@ PdoDebugger::debugStatement($hearingStatement, $params);
   <body>
     <h1><?= $client ?></h1>
 
-    <h2>Legislations</h2>
+    <h2>Legislation</h2>
     <table>
       <thead>
         <tr>
